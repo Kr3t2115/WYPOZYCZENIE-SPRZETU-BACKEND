@@ -1,0 +1,4 @@
+
+npx prisma migrate dev --name "nazwa migracji" // schemat synchronizuje się z bazą
+
+npx prisma generate // prisma synchronizuje metody używane
