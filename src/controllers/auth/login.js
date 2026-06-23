@@ -1,69 +1,12 @@
-import {prisma} from "../../config/db.js";
-import bcrypt from 'bcryptjs';
-import {generateToken} from "../../utils/generateToken.js";
 import http from "http2";
-
-
-/**
- * @openapi
- * /api/auth/login:
- *   post:
- *     summary: Sprawdza czy użytkownik jest zalogowany
- *     description: Zwraca informację czy użytkownik posiada poprawną sesję lub token.
- *     tags:
- *       - Auth
- *     requestBody:
- *       required: true
- *       content:
- *         application/json:
- *           schema:
- *             type: object
- *             required:
- *               - email
- *               - password
- *             properties:
- *               email:
- *                 type: string
- *                 example: test@test.pl
- *               password:
- *                 type: string
- *                 example: mojeHaslo123
- *     responses:
- *       200:
- *         description: Użytkownik jest zalogowany
- *         content:
- *           application/json:
- *             schema:
- *               type: object
- *               properties:
- *                 message:
- *                   type: string
- *                   example: Logowanie udane
- *       401:
- *         description: Użytkownik nie jest zalogowany
- *         content:
- *           application/json:
- *             schema:
- *               type: object
- *               properties:
- *                 message:
- *                   type: string
- *                   example: Logowanie nieudane
- */
-
+import {checkUserExistByEmail} from "../../repositories/userRepositories.js";
+import {generateToken, verifyPassword} from "../../services/authServices.js";
+import bcrypt from "bcryptjs";
 
 const login = async (req, res) => {
-    const { nickname, password } = req.body;
+    const { email, password } = req.body;
 
-    if(!nickname || !password || !password.length) {
-        return res.status(http.constants.HTTP_STATUS_UNAUTHORIZED).json({
-            message: "Brak wymaganych pól formularza !!!"
-        })
-    }
-
-    const userExist = await prisma.user.findUnique({
-        where: { nickName: nickname },
-    });
+    const userExist = await checkUserExistByEmail(email);
 
     if (!userExist) {
         return res.status(http.constants.HTTP_STATUS_UNAUTHORIZED).json({
@@ -71,14 +14,13 @@ const login = async (req, res) => {
         })
     }
 
-    const match = await bcrypt.compare(password, userExist.password);
+    const match = await verifyPassword(password, userExist.password);
+
     if(!match) {
         return res.status(http.constants.HTTP_STATUS_UNAUTHORIZED).json({
             message: "Błędne hasło"
         })
     }
-
-    console.log(userExist.id);
 
     generateToken(userExist.id, res);
 
