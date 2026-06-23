@@ -1,12 +1,12 @@
-import swaggerJsdoc from "swagger-jsdoc";
+import swaggerJsdoc from 'swagger-jsdoc'
 
 const options = {
     definition: {
-        openapi: "3.0.0",
+        openapi: '3.0.0',
         info: {
-            title: "Moje API",
-            version: "1.0.0",
-            description: "Dokumentacja API",
+            title: 'Moje API',
+            version: '1.0.0',
+            description: 'Dokumentacja API',
         },
         servers: [
             {
@@ -14,11 +14,9 @@ const options = {
             },
         ],
     },
-    apis: [
-        "./src/docs/**/*.yaml"
-    ],
-};
+    apis: ['./src/docs/**/*.yaml'],
+}
 
-const swaggerSpec = swaggerJsdoc(options);
+const swaggerSpec = swaggerJsdoc(options)
 
-export {swaggerSpec};
+export { swaggerSpec }

@@ -9,15 +9,12 @@ import express from 'express';
 import cors from 'cors';
 import cookieParser from "cookie-parser";
 import routes from './routes/routes.js';
+import {errorHandler} from "./utils/errorHandler.js";
 
 import {connectDB} from './config/db.js';
 connectDB()
 
 const app = express();
-
-app.use('/api-docsaaaaa', (req, res) => {
-    res.send('swagger route works');
-});
 
 app.use(
     "/api/docs",
@@ -48,3 +45,4 @@ app.get('/', (req, res) => {
 
 app.use('/api', routes);
 
+app.use(errorHandler)

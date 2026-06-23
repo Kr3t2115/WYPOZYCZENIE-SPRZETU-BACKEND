@@ -1,14 +1,14 @@
-const updateEquipmentCategory = async (req, res) => {
-    if (req.user) {
-        return res.status(200).json({
-            message: "Logowanie udane"
-        });
-    }
-    else {
-        return res.status(401).json({
-            message: "Logowanie nieudane sadeg"
-        });
+import { update } from '../../services/equipmentCategory.js'
+
+const updateEquipmentCategory = async (req, res, next) => {
+    try {
+        const { id } = req.params
+        const data = req.body
+        const category = await update(id, data)
+        res.status(200).json(category)
+    } catch (err) {
+        next(err)
     }
 }
 
-export {updateEquipmentCategory}
+export { updateEquipmentCategory }

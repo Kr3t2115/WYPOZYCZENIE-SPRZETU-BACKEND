@@ -1,14 +1,18 @@
 import {prisma} from "../config/db.js";
 
-const checkUserExistByEmail = async (email) => {
-   let a=  await prisma.user.findUnique({
+const getUserExistByEmail = async (email) => {
+   return prisma.user.findUnique({
        where: {email: email}
    });
+}
 
-   return a;
+const getUserById = async (userId) => {
+    return prisma.user.findUnique({
+        where: {id: userId}
+    });
 }
 
 
 
 
-export {checkUserExistByEmail};
+export {getUserExistByEmail, getUserById};

@@ -1,19 +1,21 @@
-const validate = (schema, source='body') => {
+const validate = (schema, source = 'body') => {
     return (req, res, next) => {
-        const data = source === "params" ? req.params
-            : source === "query"  ? req.query
-                : req.body;
-
-        const result = schema.safeParse(data);
-
-        if(!result.success) {
-            const errorMessages = result.error.errors.map((err) => err.message);
-            const error = errorMessages.join(", ");
-            return res.status(400).json({error: error});
+        const sourceData = {
+            params: req.params,
+            query: req.query,
+            body: req.body,
         }
 
-        next();
+        const result = schema.safeParse(sourceData[source])
+
+        if (!result.success) {
+            const errorMessages = result.error.issues.map((err) => err.message)
+            const error = errorMessages.join(', ')
+            return res.status(400).json({ error: error })
+        }
+
+        next()
     }
 }
 
-export {validate}
+export { validate }

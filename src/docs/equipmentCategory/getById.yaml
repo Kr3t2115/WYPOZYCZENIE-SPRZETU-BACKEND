@@ -1,0 +1,30 @@
+/api/equipment/categories/{id}:
+  get:
+    summary: Pobieranie po ID categorii danego przedmiotu
+    tags: [EquipmentCategories]
+    parameters:
+      - name: id
+        in: path
+        required: true
+        schema:
+          type: string
+          format: uuid
+        description: ID kategorii przedmiotu
+        example: "3fa85f64-5717-4562-b3fc-2c963f66afa6"
+    responses:
+      200:
+        description: Prawidłowe pobranie kategorii
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                id:
+                  type: string
+                  example: 3fa85f64-5717-4562-b3fc-2c963f66afa6
+                name:
+                  type: string
+                  example: Laptop
+                description:
+                  type: string
+                  example: Laptop to bardzo potrzebne narzędzie do nauki, bez niego nie ma bata że zdasz egzaminy u wykładowcy.
