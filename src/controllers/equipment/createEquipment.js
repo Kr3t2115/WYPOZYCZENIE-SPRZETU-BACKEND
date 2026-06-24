@@ -1,14 +1,12 @@
-const createEquipment = async (req, res) => {
-    if (req.user) {
-        return res.status(200).json({
-            message: "Logowanie udane"
-        });
-    }
-    else {
-        return res.status(401).json({
-            message: "Logowanie nieudane sadeg"
-        });
+import { create } from '../../services/equipment.js'
+
+const createEquipment = async (req, res, next) => {
+    try {
+        const equipment = await create(req.body)
+        return res.status(201).json(equipment)
+    } catch (err) {
+        next(err)
     }
 }
 
-export {createEquipment}
+export { createEquipment }
