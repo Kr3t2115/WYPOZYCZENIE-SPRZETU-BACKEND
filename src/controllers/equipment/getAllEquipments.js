@@ -1,14 +1,12 @@
-const getAllEquipments = async (req, res) => {
-    if (req.user) {
-        return res.status(200).json({
-            message: "Logowanie udane"
-        });
-    }
-    else {
-        return res.status(401).json({
-            message: "Logowanie nieudane sadeg"
-        });
+import { getAll } from '../../services/equipment.js'
+
+const getAllEquipments = async (req, res, next) => {
+    try {
+        const equipments = await getAll(req.body)
+        return res.status(200).json(equipments)
+    } catch (err) {
+        next(err)
     }
 }
 
-export {getAllEquipments}
+export { getAllEquipments }

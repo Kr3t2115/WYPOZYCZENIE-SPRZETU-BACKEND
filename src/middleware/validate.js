@@ -1,9 +1,21 @@
-const validate = (schema, source = 'body') => {
+import { BadRequst } from '../utils/errors.js'
+
+const VALIDATION_SOURCE = Object.freeze({
+    BODY: 'body',
+    QUERY: 'query',
+    PARAMS: 'params',
+})
+
+const validate = (schema, source = VALIDATION_SOURCE.BODY) => {
     return (req, res, next) => {
         const sourceData = {
             params: req.params,
             query: req.query,
             body: req.body,
+        }
+
+        if (!Object.values(VALIDATION_SOURCE).includes(source)) {
+            throw new BadRequst(`Bad request`)
         }
 
         const result = schema.safeParse(sourceData[source])
@@ -18,4 +30,4 @@ const validate = (schema, source = 'body') => {
     }
 }
 
-export { validate }
+export { validate, VALIDATION_SOURCE }

@@ -91,7 +91,7 @@ enum EquipmentStatus {
 model Equipment {
   id           String          @id @default(uuid())
   name         String          @db.VarChar(100)
-  serialNumber String?         @unique @db.VarChar(100) // opcjonalne — nie każdy sprzęt ma numer seryjny
+  serialNumber String?         @db.VarChar(100)
   inventoryNumber String       @unique @db.VarChar(50)
   categoryId   String
   status       EquipmentStatus @default(AVAILABLE)

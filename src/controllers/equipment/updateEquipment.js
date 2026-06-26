@@ -1,14 +1,12 @@
-const updateEquipment = async (req, res) => {
-    if (req.user) {
-        return res.status(200).json({
-            message: "Logowanie udane"
-        });
-    }
-    else {
-        return res.status(401).json({
-            message: "Logowanie nieudane sadeg"
-        });
+import { update } from '../../services/equipment.js'
+
+const updateEquipment = async (req, res, next) => {
+    try {
+        const equipments = await update(req.params.id, req.body)
+        return res.status(200).json(equipments)
+    } catch (err) {
+        next(err)
     }
 }
 
-export {updateEquipment}
+export { updateEquipment }

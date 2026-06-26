@@ -23,4 +23,10 @@ class ForbiddenError extends ApiError {
     }
 }
 
-export { NotFoundError, ConflictError, ForbiddenError }
+class BadRequst extends ApiError {
+    constructor(message = 'Bad request') {
+        super(message, 400)
+    }
+}
+
+export { NotFoundError, ConflictError, ForbiddenError, BadRequst }

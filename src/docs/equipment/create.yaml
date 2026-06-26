@@ -1,0 +1,54 @@
+/api/equipment:
+  post:
+    summary: Dodanie nowych przedmiotów
+    tags: [Equipment]
+    requestBody:
+      required: true
+      content:
+        application/json:
+          schema:
+            type: object
+            required: [name, status, inventoryNumber, serialNumber, categoryId]
+            properties:
+              name:
+                type: string
+                example: Laptop
+              status:
+                type: string
+                enum: [AVAILABLE, RENTED, MAINTENANCE, RETIRED]
+                example: AVAILABLE
+              inventoryNumber:
+                type: string
+                example: 123131231
+              serialNumber:
+                type: string
+                example: 123123123123
+              categoryId:
+                type: string
+                example: 0ef16739-cb01-4398-86e0-795cbdb30d7c
+    responses:
+      200:
+        description: Dodawanie udane
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                id:
+                  type: string
+                  example: 3fa85f64-5717-4562-b3fc-2c963f66afa6
+                name:
+                  type: string
+                  example: Lenovo M15
+                status:
+                  type: string
+                  example: AVAILABLE
+                inventoryNumber:
+                  type: string
+                  example: 123131231
+                serialNumber:
+                  type: string
+                  example: 123123123123
+                categoryId:
+                  type: string
+                  example: 0ef16739-cb01-4398-86e0-795cbdb30d7c

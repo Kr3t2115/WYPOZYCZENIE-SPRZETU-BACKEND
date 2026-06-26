@@ -1,0 +1,35 @@
+/api/equipment:
+  get:
+    summary: Pobieranie wszystkich przedmiotów
+    tags: [Equipment]
+    responses:
+      200:
+        description: Prawidłowe pobranie przedmiotów
+        content:
+          application/json:
+            schema:
+              type: array
+              items:
+                type: object
+                properties:
+                  id:
+                    type: string
+                    example: 3fa85f64-5717-4562-b3fc-2c963f66afa6
+                  name:
+                    type: string
+                    example: Lenovo M15
+                  status:
+                    type: string
+                    example: AVAILABLE
+                  inventoryNumber:
+                    type: string
+                    example: 123131231
+                  serialNumber:
+                    type: string
+                    example: 123123123123
+                  categoryId:
+                    type: string
+                    example: 0ef16739-cb01-4398-86e0-795cbdb30d7c
+                  createdAt:
+                    type: string
+                    example: 2026-06-26T11:43:04.379Z
