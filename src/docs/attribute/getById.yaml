@@ -1,0 +1,34 @@
+/api/equipment/attributes/{id}:
+  get:
+    summary: Pobieranie po ID atrybutu
+    tags: [Attributes]
+    parameters:
+      - name: id
+        in: path
+        required: true
+        schema:
+          type: string
+          format: uuid
+        description: ID przedmiotu
+        example: 2a849464-9db9-4e64-9ac6-275ded0717f1
+    responses:
+      200:
+        description: Prawidłowe pobranie atrybutu
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                id:
+                  type: string
+                  example: 2a849464-9db9-4e64-9ac6-275ded0717f1
+                name:
+                  type: string
+                  example: RAM
+                type:
+                  type: string
+                  enum: [TEXT, NUMBER, SELECT, DATE, BOOLEAN]
+                  example: NUMBER
+                unit:
+                  type: string
+                  example: GB

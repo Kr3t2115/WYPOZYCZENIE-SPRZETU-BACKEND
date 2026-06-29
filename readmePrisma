@@ -8,3 +8,8 @@ odkomentuj shadowDatabaseUrl w prisma.config.ts (teorytycznie nie mogą być tak
 npx prisma migrate diff --from-migrations ./prisma/migrations --to-schema ./prisma/schema.prisma --script
 
 
+-- PAMIĘTAJ O PONIŻSZYM NAZEWNICTWIE dla nowych modułów
+
+Repository: find, findById, insert, update, remove
+Serviceget: get, getById, create, update, delete
+Controller: index/list, show, store, update, destroy

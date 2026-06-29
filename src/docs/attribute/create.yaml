@@ -1,0 +1,43 @@
+/api/equipment/attributes:
+  post:
+    summary: Dodanie nowych atrybutów
+    tags: [Attributes]
+    requestBody:
+      required: true
+      content:
+        application/json:
+          schema:
+            type: object
+            required: [name, type, unit]
+            properties:
+              name:
+                type: string
+                example: RAM
+              type:
+                type: string
+                enum: [TEXT, NUMBER, SELECT, DATE, BOOLEAN]
+                example: NUMBER
+              unit:
+                type: string
+                example: GB
+    responses:
+      200:
+        description: Dodawanie udane
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                id:
+                  type: string
+                  example: 2a849464-9db9-4e64-9ac6-275ded0717f1
+                name:
+                  type: string
+                  example: RAM
+                type:
+                  type: string
+                  enum: [TEXT, NUMBER, SELECT, DATE, BOOLEAN]
+                  example: NUMBER
+                unit:
+                  type: string
+                  example: GB

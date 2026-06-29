@@ -1,14 +1,12 @@
-const getAllAttributes = async (req, res) => {
-    if (req.user) {
-        return res.status(200).json({
-            message: "Logowanie udane"
-        });
-    }
-    else {
-        return res.status(401).json({
-            message: "Logowanie nieudane sadeg"
-        });
+import { getAll } from '../../services/attribute.js'
+
+const getAllAttributes = async (req, res, next) => {
+    try {
+        const attributes = await getAll()
+        return res.status(200).json(attributes)
+    } catch (err) {
+        next(err)
     }
 }
 
-export {getAllAttributes}
+export { getAllAttributes }

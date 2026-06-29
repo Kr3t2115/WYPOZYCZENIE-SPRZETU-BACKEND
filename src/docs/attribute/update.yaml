@@ -1,0 +1,51 @@
+/api/equipment/attributes/{id}:
+  patch:
+    summary: Aktualizacja atrybutu
+    tags: [Attributes]
+    parameters:
+      - name: id
+        in: path
+        required: true
+        schema:
+          type: string
+          format: uuid
+        description: ID atrybutu
+        example: 2a849464-9db9-4e64-9ac6-275ded0717f1
+    requestBody:
+      required: true
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              name:
+                type: string
+                example: RAMy
+              type:
+                type: string
+                enum: [TEXT, NUMBER, SELECT, DATE, BOOLEAN]
+                example: NUMBER
+              unit:
+                type: string
+                example: GBa
+    responses:
+      200:
+        description: Dodawanie udane
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                id:
+                  type: string
+                  example: 2a849464-9db9-4e64-9ac6-275ded0717f1
+                name:
+                  type: string
+                  example: RAMy
+                type:
+                  type: string
+                  enum: [TEXT, NUMBER, SELECT, DATE, BOOLEAN]
+                  example: NUMBER
+                unit:
+                  type: string
+                  example: GBa

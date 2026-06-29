@@ -1,29 +1,34 @@
-import express from 'express';
+import express from 'express'
+import { validate, VALIDATION_SOURCE } from '../../middleware/validate.js'
+import { idParamsSchema } from '../../validators/common/schemas.js'
+import { roleMiddleware } from '../../middleware/roleMiddleware.js'
+import { Role } from '@prisma/client'
 
-import {login} from '../../controllers/auth/login.js';
-import {register} from '../../controllers/auth/register.js';
-import {nicknameAvailability} from '../../controllers/auth/nicknameAvailability.js';
+import { createSchema } from '../../validators/attribute/createSchema.js'
+import { updateSchema } from '../../validators/attribute/updateSchema.js'
 
-import {isLogged} from '../../controllers/auth/isLogged.js';
+import { getAllAttributes } from '../../controllers/attribute/getAllAttributes.js'
+import { getAttributeById } from '../../controllers/attribute/getAttributeById.js'
+import { createAttribute } from '../../controllers/attribute/createAttribute.js'
+import { updateAttribute } from '../../controllers/attribute/updateAttribute.js'
 
-import {validate} from "../../middleware/validate.js";
+const equipmentAttributesRoutes = express.Router()
 
-import {loginSchema} from "../../validators/auth/loginSchema.js";
-import {registerSchema} from "../../validators/auth/registerSchema.js";
-import {nicknameCheckSchema} from "../../validators/auth/nicknameCheckSchema.js";
-import {authMiddleware} from "../../middleware/authMiddleware.js";
+equipmentAttributesRoutes.get('/', getAllAttributes)
+equipmentAttributesRoutes.get(
+    '/:id',
+    validate(idParamsSchema, VALIDATION_SOURCE.PARAMS),
+    getAttributeById
+)
 
-const authRoutes = express.Router();
+equipmentAttributesRoutes.use(roleMiddleware([Role.IT_STAFF, Role.SECRETARIAT]))
 
-authRoutes.post('/login', validate(loginSchema), login)
-authRoutes.post('/register', validate(registerSchema), register)
-authRoutes.get('/nickname-availability', validate(nicknameCheckSchema), nicknameAvailability)
+equipmentAttributesRoutes.post('/', validate(createSchema), createAttribute)
+equipmentAttributesRoutes.patch(
+    '/:id',
+    validate(idParamsSchema, VALIDATION_SOURCE.PARAMS),
+    validate(updateSchema),
+    updateAttribute
+)
 
-
-// PROTECTED ROUTES
-
-authRoutes.use(authMiddleware)
-authRoutes.get('/is-logged', isLogged)
-
-
-export {authRoutes}
+export { equipmentAttributesRoutes }
