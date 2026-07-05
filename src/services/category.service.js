@@ -1,5 +1,5 @@
 import * as categoryRepository from '../repositories/category.repository.js'
-import { ConflictError, NotFoundError } from '../utils/errors.js'
+import { ConflictError, NotFoundError } from '../utils/errors.util.js'
 
 const getAll = async () => {
     return categoryRepository.findAll()

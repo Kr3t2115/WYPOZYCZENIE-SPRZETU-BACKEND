@@ -4,7 +4,11 @@ import {
     validateMiddleware,
     VALIDATION_SOURCE,
 } from '../middleware/validate.middleware.js'
-import { createSchema, updateSchema } from '../schemas/attribute.schema.js'
+import {
+    createSchema,
+    updateSchema,
+    getSchema,
+} from '../schemas/attribute.schema.js'
 import { idParamsSchema } from '../schemas/common.schema.js'
 
 import { roleMiddleware } from '../middleware/role.middleware.js'
@@ -19,7 +23,11 @@ import {
 
 const attributeRoutes = express.Router()
 
-attributeRoutes.get('/', list)
+attributeRoutes.get(
+    '/',
+    validateMiddleware(getSchema, VALIDATION_SOURCE.QUERY),
+    list
+)
 
 attributeRoutes.get(
     '/:id',

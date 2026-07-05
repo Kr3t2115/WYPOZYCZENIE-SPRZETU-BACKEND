@@ -1,4 +1,4 @@
-import { ForbiddenError } from '../utils/errors.js'
+import { ForbiddenError } from '../utils/errors.util.js'
 
 export const roleMiddleware = (roles) => {
     return (req, res, next) => {

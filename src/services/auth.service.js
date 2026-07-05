@@ -1,7 +1,7 @@
 import bcrypt from 'bcryptjs'
 import jwt from 'jsonwebtoken'
 import { findByEmail } from '../repositories/auth.repository.js'
-import { UnauthorizedError } from '../utils/errors.js'
+import { UnauthorizedError } from '../utils/errors.util.js'
 
 const generateToken = (userId) => {
     const payload = { userId: userId }

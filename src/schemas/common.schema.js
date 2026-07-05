@@ -6,4 +6,7 @@ const idParamsSchema = z.object({
     id: uuidField,
 })
 
-export { uuidField, idParamsSchema }
+const pageField = z.coerce.number().int().positive().optional()
+const limitField = z.coerce.number().int().positive().optional()
+
+export { uuidField, idParamsSchema, pageField, limitField }

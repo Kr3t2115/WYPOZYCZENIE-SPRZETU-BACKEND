@@ -2,26 +2,87 @@
   get:
     summary: Pobieranie wszystkich atrybutów
     tags: [Attributes]
+    parameters:
+      - name: page
+        in: query
+        required: false
+        schema:
+          type: integer
+        description: Strona
+        example: 1
+      - name: limit
+        in: query
+        required: false
+        schema:
+          type: integer
+        description: Limit na stronę
+        example: 5
+      - name: name
+        in: query
+        required: false
+        schema:
+          type: string
+        description: Nazwa
+        example: RAM
+      - name: type
+        in: query
+        required: false
+        schema:
+          type: string
+          enum: [TEXT, NUMBER, SELECT, DATE, BOOLEAN]
+        description: Typ atrybutu
+        example: TEXT
+      - name: unit
+        in: query
+        required: false
+        schema:
+          type: string
+        description: Jednostka
+        example: Gb
     responses:
       200:
         description: Prawidłowe pobranie attrybutów
         content:
           application/json:
             schema:
-              type: array
-              items:
-                type: object
-                properties:
-                  id:
-                    type: string
-                    example: 2a849464-9db9-4e64-9ac6-275ded0717f1
-                  name:
-                    type: string
-                    example: RAM
-                  type:
-                    type: string
-                    enum: [TEXT, NUMBER, SELECT, DATE, BOOLEAN]
-                    example: NUMBER
-                  unit:
-                    type: string
-                    example: GB
+              type: object
+              properties:
+                data:
+                  type: array
+                  items:
+                    type: object
+                    properties:
+                      id:
+                        type: string
+                        example: 2a849464-9db9-4e64-9ac6-275ded0717f1
+                      name:
+                        type: string
+                        example: RAM
+                      type:
+                        type: string
+                        enum: [TEXT, NUMBER, SELECT, DATE, BOOLEAN]
+                        example: NUMBER
+                      unit:
+                        type: string
+                        example: GB
+                meta:
+                  type: object
+                  properties:
+                    total:
+                      type: integer
+                      example: 0
+                    page:
+                      type: integer
+                      example: 1
+                    limit:
+                      type: integer
+                      example: 10
+                    totalPages:
+                      type: integer
+                      example: 1
+                    hasNextPage:
+                      type: boolean
+                      example: false
+                    hasPrevPage:
+                      type: boolean
+                      example: true

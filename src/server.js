@@ -8,7 +8,7 @@ import express from 'express'
 import cors from 'cors'
 import cookieParser from 'cookie-parser'
 import route from './routes/route.js'
-import { errorHandler } from './utils/errorHandler.js'
+import { errorHandlerUtil } from './utils/errorHandler.util.js'
 
 import { connectDB } from './config/db.js'
 connectDB()
@@ -41,4 +41,4 @@ app.get('/', (req, res) => {
 
 app.use('/api', route)
 
-app.use(errorHandler)
+app.use(errorHandlerUtil)

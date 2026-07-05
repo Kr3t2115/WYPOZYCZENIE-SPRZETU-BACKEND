@@ -1,5 +1,5 @@
 import * as equipmentRepository from '../repositories/equipment.repository.js'
-import { ConflictError } from '../utils/errors.js'
+import { ConflictError } from '../utils/errors.util.js'
 import * as categoryRepository from '../repositories/category.repository.js'
 
 const create = async (data) => {

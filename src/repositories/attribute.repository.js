@@ -6,8 +6,12 @@ const insert = async (attribute) => {
     })
 }
 
-const findAll = async () => {
-    return prisma.attribute.findMany()
+const findAll = async (where, { skip, take }) => {
+    return prisma.attribute.findMany({ where, skip, take })
+}
+
+const count = async (where) => {
+    return prisma.attribute.count({ where })
 }
 
 const findById = async (id) => {
@@ -41,4 +45,12 @@ const update = async (id, data) => {
     })
 }
 
-export { insert, findAll, findById, findByName, findByNameWithoutId, update }
+export {
+    insert,
+    findAll,
+    findById,
+    findByName,
+    findByNameWithoutId,
+    update,
+    count,
+}

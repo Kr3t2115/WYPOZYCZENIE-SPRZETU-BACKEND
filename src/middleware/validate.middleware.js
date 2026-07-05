@@ -1,4 +1,4 @@
-import { BadRequestError } from '../utils/errors.js'
+import { BadRequestError } from '../utils/errors.util.js'
 
 const VALIDATION_SOURCE = Object.freeze({
     BODY: 'body',
