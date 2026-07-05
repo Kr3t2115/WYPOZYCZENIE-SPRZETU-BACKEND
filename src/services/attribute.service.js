@@ -1,0 +1,43 @@
+import * as attributeRepository from '../repositories/attribute.repository.js'
+import { ConflictError } from '../utils/errors.js'
+
+const create = async (data) => {
+    const attribute = await attributeRepository.findByName(data.name)
+
+    if (attribute) {
+        throw new ConflictError('Attribute already exists')
+    }
+
+    return attributeRepository.insert(data)
+}
+
+const update = async (id, data) => {
+    const attribute = await attributeRepository.findById(id)
+
+    if (!attribute) {
+        throw new ConflictError('Attribute already exists')
+    }
+
+    if (data.name) {
+        const attribute = await attributeRepository.findByNameWithoutId(
+            data.name,
+            id
+        )
+
+        if (attribute) {
+            throw new ConflictError('Attribute already exists')
+        }
+    }
+
+    return attributeRepository.update(id, data)
+}
+
+const getById = async (id) => {
+    return attributeRepository.findById(id)
+}
+
+const getAll = async (id) => {
+    return attributeRepository.findAll(id)
+}
+
+export { create, update, getById, getAll }

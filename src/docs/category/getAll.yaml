@@ -1,0 +1,23 @@
+/api/equipment/categories/:
+  get:
+    summary: Pobieranie wszystkich kategorii danego przedmiotu
+    tags: [Categories]
+    responses:
+      200:
+        description: Prawidłowe pobranie kategorii
+        content:
+          application/json:
+            schema:
+              type: array
+              items:
+                type: object
+                properties:
+                  id:
+                    type: string
+                    example: 3fa85f64-5717-4562-b3fc-2c963f66afa6
+                  name:
+                    type: string
+                    example: Laptop
+                  description:
+                    type: string
+                    example: Laptop to bardzo potrzebne narzędzie do nauki, bez niego nie ma bata że zdasz egzaminy u wykładowcy.

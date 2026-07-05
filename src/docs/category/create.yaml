@@ -1,0 +1,35 @@
+/api/equipment/categories:
+  post:
+    summary: Dodanie nowych kategorii przedmiotów
+    tags: [Categories]
+    requestBody:
+      required: true
+      content:
+        application/json:
+          schema:
+            type: object
+            required: [name, description]
+            properties:
+              name:
+                type: string
+                example: Laptop
+              description:
+                type: string
+                example: Laptop to bardzo potrzebne narzędzie do nauki, bez niego nie ma bata że zdasz egzaminy u wykładowcy.
+    responses:
+      200:
+        description: Dodawanie udane
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                id:
+                  type: string
+                  example: 3fa85f64-5717-4562-b3fc-2c963f66afa6
+                name:
+                  type: string
+                  example: Laptop
+                description:
+                  type: string
+                  example: Laptop to bardzo potrzebne narzędzie do nauki, bez niego nie ma bata że zdasz egzaminy u wykładowcy.

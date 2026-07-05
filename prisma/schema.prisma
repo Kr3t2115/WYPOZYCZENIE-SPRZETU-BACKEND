@@ -36,8 +36,8 @@ model User {
 
   rentalExtensionsReviewed RentalExtension[] @relation("ExtensionReviewer")
 
-  reportedFaults           EquipmentFault[]  @relation("FaultReporter")
-  resolvedFaults           EquipmentFault[]  @relation("FaultResolver")
+  reportedFaults           Fault[]  @relation("FaultReporter")
+  resolvedFaults           Fault[]  @relation("FaultResolver")
   faultPhotosUploaded      FaultPhoto[]      @relation("FaultPhotoUploader")
 
   inspections              RentalInspection[] @relation("InspectionCreator")
@@ -72,12 +72,12 @@ model Admin {
 }
 
 
-model EquipmentCategory {
+model Category {
   id          String @id @default(uuid())
   name        String @unique @db.VarChar(100)
   description String @db.VarChar(500)
 
-  equipment          Equipment[]
+  equipmentRoute          Equipment[]
   categoryAttributes CategoryAttribute[]
 }
 
@@ -97,11 +97,11 @@ model Equipment {
   status       EquipmentStatus @default(AVAILABLE)
   createdAt    DateTime        @default(now())
 
-  category     EquipmentCategory @relation(fields: [categoryId], references: [id])
-  values       EquipmentValue[]
+  category     Category @relation(fields: [categoryId], references: [id])
+  values       EquipmentAttribute[]
   reservations Reservation[]
   rentals      Rental[]
-  faults       EquipmentFault[]
+  faults       Fault[]
 }
 
 enum AttributeType {
@@ -120,17 +120,17 @@ model Attribute {
 
   categoryAttributes CategoryAttribute[]
   options            AttributeOption[]
-  equipmentValues    EquipmentValue[]
+  equipmentValues    EquipmentAttribute[]
 }
 
 model CategoryAttribute {
   id          String  @id @default(uuid())
   categoryId  String
   attributeId String
-  required    Boolean @default(false)
+  required    Boolean @default(true)
   order       Int     @default(0)
 
-  category  EquipmentCategory @relation(fields: [categoryId], references: [id])
+  category  Category @relation(fields: [categoryId], references: [id])
   attribute Attribute         @relation(fields: [attributeId], references: [id])
 
   @@unique([categoryId, attributeId])
@@ -143,19 +143,19 @@ model AttributeOption {
   order       Int    @default(0)
 
   attribute       Attribute        @relation(fields: [attributeId], references: [id])
-  equipmentValues EquipmentValue[]
+  equipmentValues EquipmentAttribute[]
 
   @@unique([attributeId, value])
 }
 
-model EquipmentValue {
+model EquipmentAttribute {
   id                String  @id @default(uuid())
   equipmentId       String
   attributeId       String
   value             String? @db.VarChar(255) // dla TEXT / NUMBER / DATE / BOOLEAN
   attributeOptionId String?                  // dla SELECT
 
-  equipment       Equipment        @relation(fields: [equipmentId], references: [id], onDelete: Cascade)
+  equipmentRoute       Equipment        @relation(fields: [equipmentId], references: [id], onDelete: Cascade)
   attribute       Attribute        @relation(fields: [attributeId], references: [id])
   attributeOption AttributeOption? @relation(fields: [attributeOptionId], references: [id])
 
@@ -189,7 +189,7 @@ model Reservation {
 
   student   User      @relation("ReservedBy", fields: [studentId], references: [id])
   reviewer  User?     @relation("ReviewedBy", fields: [reviewedBy], references: [id])
-  equipment Equipment @relation(fields: [equipmentId], references: [id])
+  equipmentRoute Equipment @relation(fields: [equipmentId], references: [id])
 
   rental Rental? // powstaje po odebraniu sprzętu
 }
@@ -222,11 +222,11 @@ model Rental {
   student     User         @relation("RentedBy", fields: [studentId], references: [id])
   issuer      User         @relation("IssuedBy", fields: [issuedBy], references: [id])
   receiver    User?        @relation("ReceivedBy", fields: [receivedBy], references: [id])
-  equipment   Equipment    @relation(fields: [equipmentId], references: [id])
+  equipmentRoute   Equipment    @relation(fields: [equipmentId], references: [id])
   reservation Reservation? @relation(fields: [reservationId], references: [id])
 
   extensions  RentalExtension[]
-  faults      EquipmentFault[]
+  faults      Fault[]
   inspections RentalInspection[]
 }
 
@@ -270,7 +270,7 @@ enum FaultStatus {
   DISMISSED
 }
 
-model EquipmentFault {
+model Fault {
   id          String        @id @default(uuid())
   equipmentId String
   rentalId    String
@@ -288,7 +288,7 @@ model EquipmentFault {
   resolvedAt  DateTime?
   resolveNote String?  @db.Text
 
-  equipment Equipment @relation(fields: [equipmentId], references: [id])
+  equipmentRoute Equipment @relation(fields: [equipmentId], references: [id])
   rental    Rental    @relation(fields: [rentalId], references: [id])
   reporter  User      @relation("FaultReporter", fields: [reportedBy], references: [id])
   resolver  User?     @relation("FaultResolver", fields: [resolvedBy], references: [id])
@@ -303,7 +303,7 @@ model FaultPhoto {
   uploadedBy String
   createdAt  DateTime @default(now())
 
-  fault    EquipmentFault @relation(fields: [faultId], references: [id], onDelete: Cascade)
+  fault    Fault @relation(fields: [faultId], references: [id], onDelete: Cascade)
   uploader User           @relation("FaultPhotoUploader", fields: [uploadedBy], references: [id])
 }
 

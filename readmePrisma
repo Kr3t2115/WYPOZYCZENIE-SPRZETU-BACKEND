@@ -11,5 +11,5 @@ npx prisma migrate diff --from-migrations ./prisma/migrations --to-schema ./pris
 -- PAMIĘTAJ O PONIŻSZYM NAZEWNICTWIE dla nowych modułów
 
 Repository: find, findById, insert, update, remove
-Serviceget: get, getById, create, update, delete
-Controller: index/list, show, store, update, destroy
+Service: get, getById, create, update, delete
+Controller: list, show, store, update, destroy

@@ -1,0 +1,25 @@
+/api/auth/is-logged:
+  get:
+    summary: Sprawdza czy użytkownik jest zalogowany
+    tags: [Auth]
+    responses:
+      200:
+        description: Logowanie udane
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                message:
+                  type: string
+                  example: Logowanie udane
+      401:
+        description: Logowanie nieudane
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                message:
+                  type: string
+                  example: Logowanie nieudane
