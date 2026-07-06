@@ -12,7 +12,11 @@ import {
     VALIDATION_SOURCE,
 } from '../middleware/validate.middleware.js'
 
-import { createSchema, updateSchema } from '../schemas/category.schema.js'
+import {
+    createSchema,
+    updateSchema,
+    getSchema,
+} from '../schemas/category.schema.js'
 import { idParamsSchema } from '../schemas/common.schema.js'
 
 import { roleMiddleware } from '../middleware/role.middleware.js'
@@ -20,9 +24,17 @@ import { Role } from '@prisma/client'
 
 const categoryRoutes = express.Router()
 
-categoryRoutes.get('', list)
+categoryRoutes.get(
+    '',
+    validateMiddleware(getSchema, VALIDATION_SOURCE.QUERY),
+    list
+)
 
-categoryRoutes.get('/:id', validateMiddleware(idParamsSchema), show)
+categoryRoutes.get(
+    '/:id',
+    validateMiddleware(idParamsSchema, VALIDATION_SOURCE.PARAMS),
+    show
+)
 
 // ONLY FOR IT STAFF AND SECRETARIAT
 categoryRoutes.use(roleMiddleware([Role.IT_STAFF, Role.SECRETARIAT]))

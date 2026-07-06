@@ -1,13 +1,17 @@
 import { prisma } from '../config/db.js'
 
-const insert = async (attribute) => {
-    return prisma.attribute.create({
-        data: attribute,
+const insert = async (category) => {
+    return prisma.category.create({
+        data: category,
     })
 }
 
-const findAll = async () => {
-    return prisma.attribute.findMany()
+const findAll = async (where, { skip, take }) => {
+    return prisma.category.findMany({ where, skip, take })
+}
+
+const count = async (where) => {
+    return prisma.category.count({ where })
 }
 
 const findById = async (id) => {
@@ -41,4 +45,12 @@ const update = async (id, data) => {
     })
 }
 
-export { insert, findAll, findById, findByName, findByNameWithoutId, update }
+export {
+    insert,
+    findAll,
+    findById,
+    findByName,
+    findByNameWithoutId,
+    update,
+    count,
+}

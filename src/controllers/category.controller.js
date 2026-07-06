@@ -1,4 +1,5 @@
 import * as categoryService from '../services/category.service.js'
+import { getPaginationParams } from '../utils/pagination.util.js'
 
 const store = async (req, res, next) => {
     try {
@@ -11,7 +12,10 @@ const store = async (req, res, next) => {
 
 const list = async (req, res, next) => {
     try {
-        const equipments = await categoryService.getAll()
+        const { page, limit, ...filters } = req.query
+        const pagination = getPaginationParams(page, limit)
+
+        const equipments = await categoryService.getAll(filters, pagination)
         return res.status(200).json(equipments)
     } catch (err) {
         next(err)
