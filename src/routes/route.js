@@ -4,6 +4,7 @@ import { authRoutes } from './auth.route.js'
 import { categoryRoutes } from './category.route.js'
 import { equipmentRoutes } from './equipment.route.js'
 import { attributeRoutes } from './attribute.route.js'
+import { categoryAttributesRoutes } from './category-attributes.route.js'
 
 import { authMiddleware } from '../middleware/auth.middleware.js'
 
@@ -15,6 +16,7 @@ route.use('/auth', authRoutes)
 route.use(authMiddleware)
 
 route.use('/equipment/attributes', attributeRoutes)
+route.use('/equipment/category-attributes', categoryAttributesRoutes)
 route.use('/equipment/categories', categoryRoutes)
 route.use('/equipment', equipmentRoutes)
 
