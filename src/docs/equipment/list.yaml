@@ -1,35 +1,104 @@
 /api/equipment:
-  get:
-    summary: Pobieranie wszystkich przedmiotów
-    tags: [Equipment]
-    responses:
-      200:
-        description: Prawidłowe pobranie przedmiotów
-        content:
-          application/json:
-            schema:
-              type: array
-              items:
-                type: object
-                properties:
-                  id:
-                    type: string
-                    example: 3fa85f64-5717-4562-b3fc-2c963f66afa6
-                  name:
-                    type: string
-                    example: Lenovo M15
-                  status:
-                    type: string
-                    example: AVAILABLE
-                  inventoryNumber:
-                    type: string
-                    example: 123131231
-                  serialNumber:
-                    type: string
-                    example: 123123123123
-                  categoryId:
-                    type: string
-                    example: 0ef16739-cb01-4398-86e0-795cbdb30d7c
-                  createdAt:
-                    type: string
-                    example: 2026-06-26T11:43:04.379Z
+    get:
+        summary: Pobieranie wszystkich przedmiotów
+        tags: [Equipment]
+        parameters:
+            - name: page
+              in: query
+              required: false
+              schema:
+                  type: integer
+              description: Strona
+              example: 1
+            - name: limit
+              in: query
+              required: false
+              schema:
+                  type: integer
+              description: Limit na stronę
+              example: 5
+            - name: name
+              in: query
+              required: false
+              schema:
+                  type: string
+              description: Nazwa
+              example: Laptop Macbook PRO ULTRA HYPER MAX - I LOVE U STEVE
+            - name: serialNumber
+              in: query
+              required: false
+              schema:
+                  type: string
+              description: Numer seryjny
+              example: 1111111
+            - name: inventoryNumber
+              in: query
+              required: false
+              schema:
+                  type: string
+              description: Numer inwentarzowy
+              example: 111111111
+            - name: status
+              in: query
+              required: false
+              schema:
+                  type: string
+                  enum: [AVAILABLE, RENTED, MAINTENANCE, RETIRED]
+              description: Numer inwentarzowy
+              example: 111111111
+        responses:
+            200:
+                description: Prawidłowe pobranie przedmiotów
+                content:
+                    application/json:
+                        schema:
+                            type: object
+                            properties:
+                                data:
+                                    type: array
+                                    items:
+                                        type: object
+                                        properties:
+                                            id:
+                                                type: string
+                                                example: 3fa85f64-5717-4562-b3fc-2c963f66afa6
+                                            name:
+                                                type: string
+                                                example: Lenovo M15
+                                            status:
+                                                type: string
+                                                example: AVAILABLE
+                                            inventoryNumber:
+                                                type: string
+                                                example: 123131231
+                                            serialNumber:
+                                                type: string
+                                                example: 123123123123
+                                            categoryId:
+                                                type: string
+                                                example: 0ef16739-cb01-4398-86e0-795cbdb30d7c
+                                            createdAt:
+                                                type: string
+                                                example: 2026-06-26T11:43:04.379Z
+
+                                meta:
+                                    type: object
+                                    properties:
+                                        total:
+                                            type: integer
+                                            example: 0
+                                        page:
+                                            type: integer
+                                            example: 1
+                                        limit:
+                                            type: integer
+                                            example: 10
+                                        totalPages:
+                                            type: integer
+                                            example: 1
+                                        hasNextPage:
+                                            type: boolean
+                                            example: false
+                                        hasPrevPage:
+                                            type: boolean
+                                            example: true

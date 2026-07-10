@@ -1,6 +1,6 @@
 import { z } from 'zod'
 import { EquipmentStatus } from '@prisma/client'
-import { uuidField } from './common.schema.js'
+import { paginationFields, uuidField } from './common.schema.js'
 
 const nameField = z.string().min(3).max(100)
 const serialNumberField = z.string().min(3).max(100)
@@ -24,11 +24,13 @@ const updateSchema = z.object({
     categoryId: uuidField.optional(),
 })
 
-export {
-    nameField,
-    serialNumberField,
-    inventoryNumberField,
-    statusField,
-    createSchema,
-    updateSchema,
-}
+const getSchema = z.object({
+    ...paginationFields.shape,
+    name: nameField.optional(),
+    status: statusField.optional(),
+    inventoryNumber: inventoryNumberField.optional(),
+    serialNumber: serialNumberField.optional(),
+    categoryId: uuidField.optional(),
+})
+
+export { createSchema, updateSchema, getSchema }

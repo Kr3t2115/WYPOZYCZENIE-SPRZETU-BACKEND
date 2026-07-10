@@ -3,6 +3,7 @@ import * as categoryRepository from '../repositories/category.repository.js'
 
 import { ConflictError } from '../utils/errors.util.js'
 import { getPaginationMeta } from '../utils/pagination.util.js'
+import { AttributeType } from '@prisma/client'
 
 const create = async (data) => {
     const attribute = await attributeRepository.findByName(data.name)
@@ -59,8 +60,8 @@ const buildWhere = (filters) => {
     if (filters.unit) {
         where.unit = { equals: filters.unit, mode: 'insensitive' }
     }
-    if (filters.type) {
-        where.type = filters.type
+    if (filters.type && AttributeType.hasOwnProperty(filters.type)) {
+        where.type = { equals: filters.type }
     }
 
     return where

@@ -6,8 +6,17 @@ const insert = async (equipment) => {
     })
 }
 
-const findAll = async () => {
-    return prisma.equipment.findMany()
+const findAll = async (where, { skip, take }) => {
+    return prisma.equipment.findMany({
+        where,
+        skip,
+        take,
+        include: { category: true },
+    })
+}
+
+const count = async (where) => {
+    return prisma.equipment.count({ where })
 }
 
 const findById = async (id) => {
@@ -30,4 +39,4 @@ const update = async (id, data) => {
     })
 }
 
-export { insert, findById, findAll, update }
+export { insert, findById, findAll, update, count }
