@@ -5,6 +5,7 @@ import {
     store,
     show,
     update,
+    destroy,
 } from '../controllers/category-attributes.controller.js'
 
 import {
@@ -43,5 +44,11 @@ categoryAttributesRoutes.patch(
     validateMiddleware(updateSchema),
     update
 )
+categoryAttributesRoutes.delete(
+    '/:id',
+    validateMiddleware(idParamsSchema, VALIDATION_SOURCE.PARAMS),
+    destroy
+)
+
 
 export { categoryAttributesRoutes }

@@ -7,7 +7,18 @@ const insert = async (categoryAttribute) => {
 }
 
 const findAll = async (where, { skip, take }) => {
-    return prisma.categoryAttribute.findMany({ where, skip, take })
+    return prisma.categoryAttribute.findMany({
+        orderBy: {
+            order: 'asc',
+        },
+        where,
+        skip,
+        take,
+        include: {
+            category: true,
+            attribute: true,
+        },
+    })
 }
 
 const count = async (where) => {
@@ -27,7 +38,7 @@ const findById = async (id) => {
         where: { id: id },
         include: {
             category: true,
-            attributes: true,
+            attribute: true,
         },
     })
 }
@@ -49,6 +60,12 @@ const findByCategoryIdAndAttributeId = async ({ categoryId, attributeId }) => {
     })
 }
 
+const remove = async (id) => {
+    return prisma.categoryAttribute.delete({
+        where: { id: id },
+    })
+}
+
 const update = async (id, data) => {
     return prisma.categoryAttribute.update({
         where: {
@@ -67,4 +84,5 @@ export {
     update,
     count,
     countAttributesForCategory,
+    remove,
 }

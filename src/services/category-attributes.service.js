@@ -16,6 +16,18 @@ const getAll = async (filters, pagination) => {
 const buildWhere = (filters) => {
     const where = {}
 
+    if (filters.categoryId) {
+        where.categoryId = filters.categoryId
+    }
+
+    if (filters.attributeId) {
+        where.attributeId = filters.attributeId
+    }
+
+    if (typeof filters.required === 'boolean') {
+        where.required = filters.required
+    }
+
     return where
 }
 
@@ -42,10 +54,14 @@ const update = async (id, data) => {
     return categoryAttributesRepository.update(id, data)
 }
 
+const remove = async (id) => {
+    await categoryAttributesRepository.remove(id)
+}
+
 const getById = async (id) => {
     const categoryAttribute = await categoryAttributesRepository.findById(id)
     if (!categoryAttribute) throw new NotFoundError('Category not found')
     return categoryAttribute
 }
 
-export { create, update, getAll, getById }
+export { create, update, getAll, getById, remove as delete }
