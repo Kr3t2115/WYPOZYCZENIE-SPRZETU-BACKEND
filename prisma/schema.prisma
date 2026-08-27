@@ -145,7 +145,7 @@ model AttributeOption {
   attribute       Attribute        @relation(fields: [attributeId], references: [id])
   equipmentValues EquipmentAttribute[]
 
-  @@unique([attributeId, value])
+  @@unique([attributeId, value], name: "attributeId_value")
 }
 
 model EquipmentAttribute {
