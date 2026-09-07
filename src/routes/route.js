@@ -6,6 +6,7 @@ import { equipmentRoutes } from './equipment.route.js'
 import { attributeRoutes } from './attribute.route.js'
 import { categoryAttributesRoutes } from './category-attributes.route.js'
 import { attributeOptionsRoutes } from './attributes-options.route.js'
+import { equipmentAttributeRoutes } from './equipments-attributes.route.js'
 
 import { authMiddleware } from '../middleware/auth.middleware.js'
 
@@ -18,6 +19,7 @@ route.use('/auth', authRoutes)
 // PROTECTED ROUTES ONLY FOR LOGGED USER
 route.use(authMiddleware)
 
+route.use('/equipment/:equipmentId/attributes', equipmentAttributeRoutes)
 route.use('/equipment/attributes/options', attributeOptionsRoutes)
 route.use('/equipment/attributes', attributeRoutes)
 route.use('/equipment/category-attributes', categoryAttributesRoutes)

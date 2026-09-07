@@ -1,9 +1,15 @@
-import * as equipmentService from '../services/equipment.service.js'
+import * as equipmentsAttributeService from '../services/equipments-attributes.service.js'
 import { getPaginationParams } from '../utils/pagination.util.js'
 
 const store = async (req, res, next) => {
     try {
-        const equipment = await equipmentService.create(req.body)
+        let data = req.body
+        let equipmentId = req.params.equipmentId
+
+        const equipment = await equipmentsAttributeService.create(
+            equipmentId,
+            req.body
+        )
         return res.status(201).json(equipment)
     } catch (err) {
         next(err)
@@ -15,7 +21,8 @@ const list = async (req, res, next) => {
         const { page, limit, ...filters } = req.query
         const pagination = getPaginationParams(page, limit)
 
-        const equipments = await equipmentService.getAll(
+        const equipments = await equipmentsAttributeService.getAll(
+            req.params.equipmentId,
             filters,
             pagination,
             req.user.role
@@ -28,7 +35,9 @@ const list = async (req, res, next) => {
 
 const show = async (req, res, next) => {
     try {
-        const equipment = await equipmentService.getById(req.params.id)
+        const equipment = await equipmentsAttributeService.getById(
+            req.params.id
+        )
         return res.status(200).json(equipment)
     } catch (err) {
         next(err)
@@ -37,7 +46,7 @@ const show = async (req, res, next) => {
 
 const update = async (req, res, next) => {
     try {
-        const equipments = await equipmentService.update(
+        const equipments = await equipmentsAttributeService.update(
             req.params.id,
             req.body
         )

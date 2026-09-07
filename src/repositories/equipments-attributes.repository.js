@@ -24,6 +24,12 @@ const findById = async (id) => {
     })
 }
 
+const findByEquipmentAndAttributeId = async (equipmentId, attributeId) => {
+    return prisma.equipmentAttribute.findFirst({
+        where: { attributeId: attributeId, equipmentId: equipmentId },
+    })
+}
+
 const update = async (id, data) => {
     return prisma.equipmentAttribute.update({
         where: {
@@ -33,4 +39,11 @@ const update = async (id, data) => {
     })
 }
 
-export { insert, findById, findAll, update, count }
+export {
+    insert,
+    findById,
+    findAll,
+    update,
+    count,
+    findByEquipmentAndAttributeId,
+}

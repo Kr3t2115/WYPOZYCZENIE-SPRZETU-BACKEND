@@ -77,7 +77,7 @@ model Category {
   name        String @unique @db.VarChar(100)
   description String @db.VarChar(500)
 
-  equipmentRoute          Equipment[]
+  equipment          Equipment[]
   categoryAttributes CategoryAttribute[]
 }
 
@@ -130,8 +130,8 @@ model CategoryAttribute {
   required    Boolean @default(true)
   order       Int     @default(0)
 
-  category  Category @relation(fields: [categoryId], references: [id])
-  attribute Attribute         @relation(fields: [attributeId], references: [id])
+  category  Category   @relation(fields: [categoryId], references: [id])
+  attribute Attribute  @relation(fields: [attributeId], references: [id])
 
   @@unique([categoryId, attributeId])
 }
@@ -142,7 +142,7 @@ model AttributeOption {
   value       String @db.VarChar(100)
   order       Int    @default(0)
 
-  attribute       Attribute        @relation(fields: [attributeId], references: [id])
+  attribute       Attribute            @relation(fields: [attributeId], references: [id])
   equipmentValues EquipmentAttribute[]
 
   @@unique([attributeId, value], name: "attributeId_value")
@@ -155,7 +155,7 @@ model EquipmentAttribute {
   value             String? @db.VarChar(255) // dla TEXT / NUMBER / DATE / BOOLEAN
   attributeOptionId String?                  // dla SELECT
 
-  equipmentRoute       Equipment        @relation(fields: [equipmentId], references: [id], onDelete: Cascade)
+  equipment       Equipment        @relation(fields: [equipmentId], references: [id], onDelete: Cascade)
   attribute       Attribute        @relation(fields: [attributeId], references: [id])
   attributeOption AttributeOption? @relation(fields: [attributeOptionId], references: [id])
 
@@ -189,7 +189,7 @@ model Reservation {
 
   student   User      @relation("ReservedBy", fields: [studentId], references: [id])
   reviewer  User?     @relation("ReviewedBy", fields: [reviewedBy], references: [id])
-  equipmentRoute Equipment @relation(fields: [equipmentId], references: [id])
+  equipment Equipment @relation(fields: [equipmentId], references: [id])
 
   rental Rental? // powstaje po odebraniu sprzętu
 }
@@ -222,7 +222,7 @@ model Rental {
   student     User         @relation("RentedBy", fields: [studentId], references: [id])
   issuer      User         @relation("IssuedBy", fields: [issuedBy], references: [id])
   receiver    User?        @relation("ReceivedBy", fields: [receivedBy], references: [id])
-  equipmentRoute   Equipment    @relation(fields: [equipmentId], references: [id])
+  equipment   Equipment    @relation(fields: [equipmentId], references: [id])
   reservation Reservation? @relation(fields: [reservationId], references: [id])
 
   extensions  RentalExtension[]
@@ -288,7 +288,7 @@ model Fault {
   resolvedAt  DateTime?
   resolveNote String?  @db.Text
 
-  equipmentRoute Equipment @relation(fields: [equipmentId], references: [id])
+  equipment Equipment @relation(fields: [equipmentId], references: [id])
   rental    Rental    @relation(fields: [rentalId], references: [id])
   reporter  User      @relation("FaultReporter", fields: [reportedBy], references: [id])
   resolver  User?     @relation("FaultResolver", fields: [resolvedBy], references: [id])
@@ -304,7 +304,7 @@ model FaultPhoto {
   createdAt  DateTime @default(now())
 
   fault    Fault @relation(fields: [faultId], references: [id], onDelete: Cascade)
-  uploader User           @relation("FaultPhotoUploader", fields: [uploadedBy], references: [id])
+  uploader User  @relation("FaultPhotoUploader", fields: [uploadedBy], references: [id])
 }
 
 enum InspectionType {
