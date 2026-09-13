@@ -5,6 +5,7 @@ import swaggerUi from 'swagger-ui-express'
 import { swaggerSpec } from './docs/swagger.js'
 
 import express from 'express'
+import path from 'path'
 import cors from 'cors'
 import cookieParser from 'cookie-parser'
 import route from './routes/route.js'
@@ -39,6 +40,7 @@ app.get('/', (req, res) => {
     res.json({ ping: 'pong' })
 })
 
+app.use('/uploads', express.static(path.join(__dirname, 'uploads')))
 app.use('/api', route)
 
 app.use(errorHandlerUtil)
