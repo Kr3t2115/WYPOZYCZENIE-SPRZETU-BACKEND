@@ -40,7 +40,10 @@ app.get('/', (req, res) => {
     res.json({ ping: 'pong' })
 })
 
-app.use('/uploads', express.static(path.join(__dirname, 'uploads')))
+app.use(
+    '/uploads',
+    express.static(path.join(import.meta.dirname, '..', 'uploads'))
+)
 app.use('/api', route)
 
 app.use(errorHandlerUtil)
