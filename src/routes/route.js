@@ -1,5 +1,7 @@
 import express from 'express'
 
+import { authMiddleware } from '../middleware/auth.middleware.js'
+
 import { authRoutes } from './auth.route.js'
 import { categoryRoutes } from './category.route.js'
 import { equipmentRoutes } from './equipment.route.js'
@@ -9,8 +11,7 @@ import { attributeOptionsRoutes } from './attributes-options.route.js'
 import { equipmentAttributeRoutes } from './equipments-attributes.route.js'
 import { reservationsRoutes } from './reservations.route.js'
 import { rentalsRoutes } from './rental.route.js'
-
-import { authMiddleware } from '../middleware/auth.middleware.js'
+import { rentalExtensionRoutes } from './rental-extension.route.js'
 
 const route = express.Router()
 
@@ -22,6 +23,7 @@ route.use('/auth', authRoutes)
 route.use(authMiddleware)
 
 route.use('/reservations', reservationsRoutes)
+route.use('/rentals/extensions', rentalExtensionRoutes)
 route.use('/rentals', rentalsRoutes)
 route.use('/equipment/:equipmentId/attributes', equipmentAttributeRoutes)
 route.use('/equipment/attributes/options', attributeOptionsRoutes)
