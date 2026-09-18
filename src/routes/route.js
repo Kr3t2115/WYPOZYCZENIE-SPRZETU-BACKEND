@@ -8,6 +8,7 @@ import { categoryAttributesRoutes } from './category-attributes.route.js'
 import { attributeOptionsRoutes } from './attributes-options.route.js'
 import { equipmentAttributeRoutes } from './equipments-attributes.route.js'
 import { reservationsRoutes } from './reservations.route.js'
+import { rentalsRoutes } from './rental.route.js'
 
 import { authMiddleware } from '../middleware/auth.middleware.js'
 
@@ -21,6 +22,7 @@ route.use('/auth', authRoutes)
 route.use(authMiddleware)
 
 route.use('/reservations', reservationsRoutes)
+route.use('/rentals', rentalsRoutes)
 route.use('/equipment/:equipmentId/attributes', equipmentAttributeRoutes)
 route.use('/equipment/attributes/options', attributeOptionsRoutes)
 route.use('/equipment/attributes', attributeRoutes)
