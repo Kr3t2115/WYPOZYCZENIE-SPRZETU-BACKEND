@@ -1,4 +1,4 @@
-import { prisma } from '../config/db.js'
+import { prisma } from '../config/db.config.js'
 
 const insert = async (reservation) => {
     return prisma.reservation.create({
