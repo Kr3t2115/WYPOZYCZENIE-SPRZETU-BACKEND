@@ -14,6 +14,7 @@ import { rentalsRoutes } from './rental.route.js'
 import { rentalExtensionRoutes } from './rental-extension.route.js'
 import { faultsRoutes } from './fault.route.js'
 import { faultsPhotosRoutes } from './fault-photo.route.js'
+import { rentalInspectionRoutes } from './rental-inspection.route.js'
 
 const route = express.Router()
 
@@ -27,6 +28,11 @@ route.use(authMiddleware)
 route.use('/faults', faultsRoutes)
 route.use('/faults/:faultdId/photos', faultsPhotosRoutes)
 route.use('/reservations', reservationsRoutes)
+route.use(
+    '/rentals/inspection/:inspectionId/photos',
+    rentalInspectionPhotoRoutes
+)
+route.use('/rentals/inspection', rentalInspectionRoutes)
 route.use('/rentals/extensions', rentalExtensionRoutes)
 route.use('/rentals', rentalsRoutes)
 route.use('/equipment/:equipmentId/attributes', equipmentAttributeRoutes)
