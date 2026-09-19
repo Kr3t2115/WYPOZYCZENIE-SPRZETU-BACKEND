@@ -12,6 +12,8 @@ import { equipmentAttributeRoutes } from './equipments-attributes.route.js'
 import { reservationsRoutes } from './reservations.route.js'
 import { rentalsRoutes } from './rental.route.js'
 import { rentalExtensionRoutes } from './rental-extension.route.js'
+import { faultsRoutes } from './fault.route.js'
+import { faultsPhotosRoutes } from './fault-photo.route.js'
 
 const route = express.Router()
 
@@ -22,6 +24,8 @@ route.use('/auth', authRoutes)
 // PROTECTED ROUTES ONLY FOR LOGGED USER
 route.use(authMiddleware)
 
+route.use('/faults', faultsRoutes)
+route.use('/faults/:faultdId/photos', faultsPhotosRoutes)
 route.use('/reservations', reservationsRoutes)
 route.use('/rentals/extensions', rentalExtensionRoutes)
 route.use('/rentals', rentalsRoutes)

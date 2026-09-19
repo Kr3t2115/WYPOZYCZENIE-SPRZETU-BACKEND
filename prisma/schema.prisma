@@ -19,6 +19,7 @@ model User {
   firstName String   @db.VarChar(100)
   lastName  String   @db.VarChar(100)
   role      Role
+  isActive  Boolean @default(true)
 
   createdAt DateTime  @default(now())
   lastLogin DateTime?
@@ -38,7 +39,6 @@ model User {
 
   reportedFaults           Fault[]  @relation("FaultReporter")
   resolvedFaults           Fault[]  @relation("FaultResolver")
-  faultPhotosUploaded      FaultPhoto[]      @relation("FaultPhotoUploader")
 
   inspections              RentalInspection[] @relation("InspectionCreator")
 }
@@ -101,7 +101,6 @@ model Equipment {
   values       EquipmentAttribute[]
   reservations Reservation[]
   rentals      Rental[]
-  faults       Fault[]
 }
 
 enum AttributeType {
@@ -272,7 +271,6 @@ enum FaultStatus {
 
 model Fault {
   id          String        @id @default(uuid())
-  equipmentId String
   rentalId    String
   reportedBy  String
   description String        @db.Text
@@ -288,7 +286,6 @@ model Fault {
   resolvedAt  DateTime?
   resolveNote String?  @db.Text
 
-  equipment Equipment @relation(fields: [equipmentId], references: [id])
   rental    Rental    @relation(fields: [rentalId], references: [id])
   reporter  User      @relation("FaultReporter", fields: [reportedBy], references: [id])
   resolver  User?     @relation("FaultResolver", fields: [resolvedBy], references: [id])
@@ -300,11 +297,9 @@ model FaultPhoto {
   id         String   @id @default(uuid())
   faultId    String
   path       String   @db.VarChar(500)
-  uploadedBy String
   createdAt  DateTime @default(now())
 
   fault    Fault @relation(fields: [faultId], references: [id], onDelete: Cascade)
-  uploader User  @relation("FaultPhotoUploader", fields: [uploadedBy], references: [id])
 }
 
 enum InspectionType {
