@@ -23,6 +23,8 @@ const route = express.Router()
 // NOT PROTECTED ROUTES
 
 route.use('/auth', authRoutes)
+route.use('/rentals/inspection/:id/photos/:token', rentalInspectionPhotoRoutes)
+route.use('/faults/:id/photos/:token', faultsPhotosRoutes)
 
 // PROTECTED ROUTES ONLY FOR LOGGED USER
 route.use(authMiddleware)

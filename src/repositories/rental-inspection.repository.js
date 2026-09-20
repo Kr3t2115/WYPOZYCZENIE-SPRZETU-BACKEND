@@ -26,6 +26,12 @@ const findById = async (id) => {
     })
 }
 
+const findByToken = async (token) => {
+    return prisma.rentalInspection.findUnique({
+        where: { uploadToken: token },
+    })
+}
+
 const update = async (id, data) => {
     return prisma.rentalInspection.update({
         where: {
@@ -35,4 +41,4 @@ const update = async (id, data) => {
     })
 }
 
-export { insert, findAll, findById, update, count }
+export { insert, findAll, findById, update, count, findByToken }

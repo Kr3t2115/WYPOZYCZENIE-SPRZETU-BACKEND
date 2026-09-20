@@ -15,12 +15,17 @@ const create = async (data, user) => {
         throw new ConflictError('To wypożyczenie nie jest twoje')
     }
 
+    const uploadToken = crypto.randomBytes(32).toString('hex')
+    const uploadTokenExpiry = new Date(Date.now() + 30 * 60 * 1000) // 30 min na wgranie zdjęć
+
     let insertedData = {
         rentalId: data.rentalId,
         description: data.description,
         severity: data.severity,
         reportedBy: user.id,
         occurredDuring: data.occurredDuring,
+        uploadToken,
+        uploadTokenExpiry,
     }
 
     return faultRepository.insert(insertedData)
@@ -71,4 +76,32 @@ const buildWhere = (filters, user) => {
     return where
 }
 
-export { create, update, getById, getAll }
+const regenerateUploadToken = async (id) => {
+    const fault = await faultRepository.findById(id)
+
+    if (!fault) {
+        throw new NotFoundError('Zgłoszenie nie istnieje')
+    }
+
+    if (
+        fault.uploadToken &&
+        fault.uploadTokenExpiry &&
+        fault.uploadTokenExpiry > new Date()
+    ) {
+        throw new ConflictError('Aktualny token nadal jest ważny')
+    }
+
+    const uploadToken = crypto.randomBytes(32).toString('hex')
+    const uploadTokenExpiry = new Date(Date.now() + 30 * 60 * 1000) // 30 min na wgranie zdjęć
+
+    const updated = await faultRepository.update(id, {
+        uploadToken,
+        uploadTokenExpiry,
+    })
+
+    return {
+        uploadUrl: `${process.env.FRONTEND_URL}/faults/${id}/upload?token=${updated.uploadToken}`,
+    }
+}
+
+export { create, update, getById, getAll, regenerateUploadToken }

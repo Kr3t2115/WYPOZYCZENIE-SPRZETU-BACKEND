@@ -306,6 +306,9 @@ model Fault {
   severity    FaultSeverity @default(MINOR)
   status      FaultStatus   @default(OPEN)
 
+  uploadToken       String?   @unique
+  uploadTokenExpiry DateTime?
+
   occurredDuring OccurrenceType
 
   createdAt DateTime @default(now())
@@ -342,6 +345,9 @@ model RentalInspection {
   type        InspectionType
   notes       String?        @db.Text
   inspectedBy String
+
+  uploadToken       String?   @unique
+  uploadTokenExpiry DateTime?
 
   createdAt DateTime @default(now())
 

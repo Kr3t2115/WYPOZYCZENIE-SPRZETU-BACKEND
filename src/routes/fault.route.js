@@ -14,7 +14,13 @@ import { idParamsSchema } from '../schemas/common.schema.js'
 import { roleMiddleware } from '../middleware/role.middleware.js'
 import { Role } from '@prisma/client'
 
-import { list, store, show, update } from '../controllers/fault.controller.js'
+import {
+    list,
+    store,
+    show,
+    update,
+    regenerateUploadToken,
+} from '../controllers/fault.controller.js'
 
 const faultsRoutes = express.Router()
 
@@ -36,5 +42,13 @@ faultsRoutes.patch(
 )
 
 faultsRoutes.post('/', validate(createSchema), store)
+
+faultsRoutes.use(roleMiddleware([Role.STUDENT]))
+
+faultsRoutes.post(
+    '/:id/regenerate-upload-token',
+    validate(idParamsSchema, VALIDATION_SOURCE.PARAMS),
+    regenerateUploadToken
+)
 
 export { faultsRoutes }

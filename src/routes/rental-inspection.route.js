@@ -19,6 +19,7 @@ import {
     store,
     show,
     update,
+    regenerateUploadToken,
 } from '../controllers/rental-inspection.controller.js'
 
 const rentalInspectionRoutes = express.Router()
@@ -45,5 +46,11 @@ rentalInspectionRoutes.patch(
 )
 
 rentalInspectionRoutes.post('/', validate(createSchema), store)
+
+rentalInspectionRoutes.post(
+    '/:id/regenerate-upload-token',
+    validate(idParamsSchema, VALIDATION_SOURCE.PARAMS),
+    regenerateUploadToken
+)
 
 export { rentalInspectionRoutes }

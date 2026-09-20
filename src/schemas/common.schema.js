@@ -6,6 +6,10 @@ const idParamsSchema = z.object({
     id: uuidField,
 })
 
+const idWithOptionalTokenSchema = idParamsSchema.extend({
+    token: z.string().min(10).optional(),
+})
+
 const dateRegex = /^(?<day>\d{2})-(?<month>\d{2})-(?<year>\d{4})$/
 const ddmmyyyyToDateField = z
     .string()
@@ -52,4 +56,5 @@ export {
     paginationFields,
     queryBoolean,
     ddmmyyyyToDateField,
+    idWithOptionalTokenSchema,
 }

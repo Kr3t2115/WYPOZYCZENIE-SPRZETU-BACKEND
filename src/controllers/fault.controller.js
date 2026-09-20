@@ -40,4 +40,13 @@ const update = async (req, res, next) => {
     }
 }
 
-export { store, list, show, update }
+const regenerateUploadToken = async (req, res, next) => {
+    try {
+        const result = await faultService.regenerateUploadToken(req.params.id)
+        return res.status(200).json(result)
+    } catch (err) {
+        next(err)
+    }
+}
+
+export { store, list, show, update, regenerateUploadToken }
