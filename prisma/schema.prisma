@@ -24,6 +24,8 @@ model User {
   createdAt DateTime  @default(now())
   lastLogin DateTime?
 
+  refreshTokens RefreshToken[]
+
   student     Student?
   secretariat Secretariat?
   admin       Admin?
@@ -71,6 +73,18 @@ model Admin {
   user User @relation(fields: [userId], references: [id], onDelete: Cascade)
 }
 
+model RefreshToken {
+  id        String   @id @default(uuid())
+  token     String   @unique
+  userId    String
+  expiresAt DateTime
+  createdAt DateTime @default(now())
+  revoked   Boolean  @default(false)
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId])
+}
 
 model Category {
   id          String @id @default(uuid())

@@ -10,7 +10,7 @@ import { idParamsSchema } from '../schemas/common.schema.js'
 import { roleMiddleware } from '../middleware/role.middleware.js'
 import { Role } from '@prisma/client'
 
-import { list, store, show, update } from '../controllers/users.controller.js'
+import { list, show, update } from '../controllers/users.controller.js'
 
 const usersRoutes = express.Router()
 

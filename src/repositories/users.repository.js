@@ -56,4 +56,34 @@ const updateLastLogin = async (id) => {
     })
 }
 
-export { findByEmail, findById, updateLastLogin, findAll, count, update }
+const createRefreshToken = async ({ token, userId, expiresAt }) => {
+    return prisma.refreshToken.create({
+        data: { token, userId, expiresAt },
+    })
+}
+
+const findRefreshToken = async (token) => {
+    return prisma.refreshToken.findUnique({
+        where: { token },
+        include: { user: true },
+    })
+}
+
+const revokeRefreshToken = async (token) => {
+    return prisma.refreshToken.updateMany({
+        where: { token },
+        data: { revoked: true },
+    })
+}
+
+export {
+    findByEmail,
+    findById,
+    updateLastLogin,
+    findAll,
+    count,
+    update,
+    createRefreshToken,
+    findRefreshToken,
+    revokeRefreshToken,
+}

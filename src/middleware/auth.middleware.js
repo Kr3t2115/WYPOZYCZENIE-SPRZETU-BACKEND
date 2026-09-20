@@ -16,7 +16,7 @@ export const authMiddleware = async (req, res, next) => {
 
         const decoded = jwt.verify(token, process.env.JWT_SECRET)
 
-        const user = await authRepository.findById(decoded.userId)
+        const user = await authRepository.findById(decoded.id)
 
         if (!user) {
             return next(new UnauthorizedError('Nie podano tokena'))
