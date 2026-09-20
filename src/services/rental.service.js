@@ -1,12 +1,12 @@
 import * as rentalRepository from '../repositories/rental.repository.js'
 import * as reservationRepository from '../repositories/reservations.repository.js'
 import * as equipmentRepository from '../repositories/equipment.repository.js'
+import * as usersRepository from '../repositories/users.repository.js'
 
 import { ConflictError, NotFoundError } from '../utils/errors.util.js'
 import { getPaginationMeta } from '../utils/pagination.util.js'
 import { EquipmentStatus, ReservationStatus, Role } from '@prisma/client'
 import { RentalCreationMode } from '../schemas/rental.schema.js'
-import * as authRepository from '../repositories/auth.repository.js'
 
 const create = async (data, user) => {
     let insertedData = {
@@ -57,7 +57,7 @@ const create = async (data, user) => {
             status: EquipmentStatus.RENTED,
         })
     } else if (data.mode === RentalCreationMode.MANUAL) {
-        const student = await authRepository.findById(data.studentId)
+        const student = await usersRepository.findById(data.studentId)
 
         if (!student) {
             throw new NotFoundError('Taki student nie istnieje')

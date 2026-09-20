@@ -16,6 +16,7 @@ import { faultsRoutes } from './fault.route.js'
 import { faultsPhotosRoutes } from './fault-photo.route.js'
 import { rentalInspectionRoutes } from './rental-inspection.route.js'
 import { rentalInspectionPhotoRoutes } from './rental-inspection-photo.route.js'
+import { usersRoutes } from './users.route.js'
 
 const route = express.Router()
 
@@ -26,6 +27,7 @@ route.use('/auth', authRoutes)
 // PROTECTED ROUTES ONLY FOR LOGGED USER
 route.use(authMiddleware)
 
+route.use('/users', usersRoutes)
 route.use('/faults', faultsRoutes)
 route.use('/faults/:id/photos', faultsPhotosRoutes)
 route.use('/reservations', reservationsRoutes)

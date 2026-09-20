@@ -1,5 +1,5 @@
 import jwt from 'jsonwebtoken'
-import * as authRepository from '../repositories/auth.repository.js'
+import * as authRepository from '../repositories/users.repository.js'
 import { UnauthorizedError } from '../utils/errors.util.js'
 
 export const authMiddleware = async (req, res, next) => {
