@@ -26,6 +26,12 @@ const findById = async (id) => {
     })
 }
 
+const countByCategoryId = async (categoryId) => {
+    return prisma.equipment.count({
+        where: { categoryId },
+    })
+}
+
 const update = async (id, data) => {
     return prisma.equipment.update({
         where: {
@@ -35,4 +41,4 @@ const update = async (id, data) => {
     })
 }
 
-export { insert, findById, findAll, update, count }
+export { insert, findById, findAll, update, count, countByCategoryId }

@@ -4,13 +4,11 @@ import { paginationFields, uuidField } from './common.schema.js'
 
 const nameField = z.string().min(3).max(100)
 const serialNumberField = z.string().min(3).max(100)
-// TODO: ZMIENIĆ POTEM NA AUTOMATYCZNE GENEROWANIE NUMERU INWENTARZOWEGO
-const inventoryNumberField = z.string().min(3).max(50)
+const inventoryNumberField = z.string().min(3).max(20)
 const statusField = z.enum(EquipmentStatus)
 
 const createSchema = z.object({
     name: nameField,
-    inventoryNumber: inventoryNumberField,
     serialNumber: serialNumberField,
     categoryId: uuidField,
 })
@@ -18,7 +16,6 @@ const createSchema = z.object({
 const updateSchema = z.object({
     name: nameField.optional(),
     status: statusField.optional(),
-    inventoryNumber: inventoryNumberField.optional(),
     serialNumber: serialNumberField.optional(),
     categoryId: uuidField.optional(),
 })

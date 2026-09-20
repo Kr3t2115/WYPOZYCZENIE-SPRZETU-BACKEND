@@ -4,6 +4,13 @@ import * as categoryRepository from '../repositories/category.repository.js'
 import { getPaginationMeta } from '../utils/pagination.util.js'
 import { EquipmentStatus, Role } from '@prisma/client'
 
+const generateInventoryNumber = ({ categoryStatusCode, currentCount }) => {
+    const sequence = (currentCount + 1).toString().padStart(6, '0')
+    const normalizedCategoryCode = categoryStatusCode.toUpperCase()
+
+    return `SAN/${normalizedCategoryCode}/${sequence}`
+}
+
 const create = async (data) => {
     const equipmentCategory = await categoryRepository.findById(data.categoryId)
 
@@ -11,7 +18,21 @@ const create = async (data) => {
         throw new NotFoundError('Taka kategoria nie istnieje')
     }
 
-    return equipmentRepository.insert(data)
+    const currentCount = await equipmentRepository.countByCategoryId(
+        equipmentCategory.id
+    )
+
+    const inventoryNumber = generateInventoryNumber({
+        categoryStatusCode: equipmentCategory.shortCode,
+        currentCount,
+    })
+
+    let insertedData = {
+        ...data,
+        inventoryNumber,
+    }
+
+    return equipmentRepository.insert(insertedData)
 }
 
 const getAll = async (filters, pagination, role) => {
