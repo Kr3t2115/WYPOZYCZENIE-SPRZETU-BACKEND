@@ -8,7 +8,7 @@ import {
 } from '../controllers/attributes-options.controller.js'
 
 import {
-    validateMiddleware,
+    validate,
     VALIDATION_SOURCE,
 } from '../middleware/validate.middleware.js'
 
@@ -26,22 +26,22 @@ const attributeOptionsRoutes = express.Router()
 
 attributeOptionsRoutes.get(
     '/',
-    validateMiddleware(getSchema, VALIDATION_SOURCE.QUERY),
+    validate(getSchema, VALIDATION_SOURCE.QUERY),
     list
 )
 attributeOptionsRoutes.get(
     '/:id',
-    validateMiddleware(idParamsSchema, VALIDATION_SOURCE.PARAMS),
+    validate(idParamsSchema, VALIDATION_SOURCE.PARAMS),
     show
 )
 
 attributeOptionsRoutes.use(roleMiddleware([Role.IT_STAFF, Role.SECRETARIAT]))
 
-attributeOptionsRoutes.post('/', validateMiddleware(createSchema), store)
+attributeOptionsRoutes.post('/', validate(createSchema), store)
 attributeOptionsRoutes.patch(
     '/:id',
-    validateMiddleware(idParamsSchema, VALIDATION_SOURCE.PARAMS),
-    validateMiddleware(updateSchema),
+    validate(idParamsSchema, VALIDATION_SOURCE.PARAMS),
+    validate(updateSchema),
     update
 )
 

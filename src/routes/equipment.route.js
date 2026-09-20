@@ -8,7 +8,7 @@ import {
 } from '../controllers/equipment.controller.js'
 
 import {
-    validateMiddleware,
+    validate,
     VALIDATION_SOURCE,
 } from '../middleware/validate.middleware.js'
 import {
@@ -23,24 +23,20 @@ import { roleMiddleware } from '../middleware/role.middleware.js'
 
 const equipmentRoutes = express.Router()
 
-equipmentRoutes.get(
-    '/',
-    validateMiddleware(getSchema, VALIDATION_SOURCE.QUERY),
-    list
-)
+equipmentRoutes.get('/', validate(getSchema, VALIDATION_SOURCE.QUERY), list)
 equipmentRoutes.get(
     '/:id',
-    validateMiddleware(idParamsSchema, VALIDATION_SOURCE.PARAMS),
+    validate(idParamsSchema, VALIDATION_SOURCE.PARAMS),
     show
 )
 
 equipmentRoutes.use(roleMiddleware([Role.IT_STAFF, Role.SECRETARIAT]))
 
-equipmentRoutes.post('/', validateMiddleware(createSchema), store)
+equipmentRoutes.post('/', validate(createSchema), store)
 equipmentRoutes.patch(
     '/:id',
-    validateMiddleware(idParamsSchema, VALIDATION_SOURCE.PARAMS),
-    validateMiddleware(updateSchema),
+    validate(idParamsSchema, VALIDATION_SOURCE.PARAMS),
+    validate(updateSchema),
     update
 )
 

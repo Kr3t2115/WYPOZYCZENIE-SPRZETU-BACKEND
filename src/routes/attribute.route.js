@@ -1,7 +1,7 @@
 import express from 'express'
 
 import {
-    validateMiddleware,
+    validate,
     VALIDATION_SOURCE,
 } from '../middleware/validate.middleware.js'
 import {
@@ -23,27 +23,23 @@ import {
 
 const attributeRoutes = express.Router()
 
-attributeRoutes.get(
-    '/',
-    validateMiddleware(getSchema, VALIDATION_SOURCE.QUERY),
-    list
-)
+attributeRoutes.get('/', validate(getSchema, VALIDATION_SOURCE.QUERY), list)
 
 attributeRoutes.get(
     '/:id',
-    validateMiddleware(idParamsSchema, VALIDATION_SOURCE.PARAMS),
+    validate(idParamsSchema, VALIDATION_SOURCE.PARAMS),
     show
 )
 
 // ONLY FOR IT STAFF AND SECRETARIAT
 attributeRoutes.use(roleMiddleware([Role.IT_STAFF, Role.SECRETARIAT]))
 
-attributeRoutes.post('/', validateMiddleware(createSchema), store)
+attributeRoutes.post('/', validate(createSchema), store)
 
 attributeRoutes.patch(
     '/:id',
-    validateMiddleware(idParamsSchema, VALIDATION_SOURCE.PARAMS),
-    validateMiddleware(updateSchema),
+    validate(idParamsSchema, VALIDATION_SOURCE.PARAMS),
+    validate(updateSchema),
     update
 )
 

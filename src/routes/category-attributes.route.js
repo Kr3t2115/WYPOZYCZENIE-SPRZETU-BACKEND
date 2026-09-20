@@ -9,7 +9,7 @@ import {
 } from '../controllers/category-attributes.controller.js'
 
 import {
-    validateMiddleware,
+    validate,
     VALIDATION_SOURCE,
 } from '../middleware/validate.middleware.js'
 import {
@@ -26,29 +26,28 @@ const categoryAttributesRoutes = express.Router()
 
 categoryAttributesRoutes.get(
     '/',
-    validateMiddleware(getSchema, VALIDATION_SOURCE.QUERY),
+    validate(getSchema, VALIDATION_SOURCE.QUERY),
     list
 )
 categoryAttributesRoutes.get(
     '/:id',
-    validateMiddleware(idParamsSchema, VALIDATION_SOURCE.PARAMS),
+    validate(idParamsSchema, VALIDATION_SOURCE.PARAMS),
     show
 )
 
 categoryAttributesRoutes.use(roleMiddleware([Role.IT_STAFF, Role.SECRETARIAT]))
 
-categoryAttributesRoutes.post('/', validateMiddleware(createSchema), store)
+categoryAttributesRoutes.post('/', validate(createSchema), store)
 categoryAttributesRoutes.patch(
     '/:id',
-    validateMiddleware(idParamsSchema, VALIDATION_SOURCE.PARAMS),
-    validateMiddleware(updateSchema),
+    validate(idParamsSchema, VALIDATION_SOURCE.PARAMS),
+    validate(updateSchema),
     update
 )
 categoryAttributesRoutes.delete(
     '/:id',
-    validateMiddleware(idParamsSchema, VALIDATION_SOURCE.PARAMS),
+    validate(idParamsSchema, VALIDATION_SOURCE.PARAMS),
     destroy
 )
-
 
 export { categoryAttributesRoutes }

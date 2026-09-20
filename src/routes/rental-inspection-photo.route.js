@@ -1,7 +1,7 @@
 import express from 'express'
 
 import {
-    validateMiddleware,
+    validate,
     VALIDATION_SOURCE,
 } from '../middleware/validate.middleware.js'
 import { idParamsSchema } from '../schemas/common.schema.js'
@@ -20,7 +20,7 @@ rentalInspectionPhotoRoutes.use(
 
 rentalInspectionPhotoRoutes.post(
     '/uploads',
-    validateMiddleware(idParamsSchema, VALIDATION_SOURCE.PARAMS),
+    validate(idParamsSchema, VALIDATION_SOURCE.PARAMS),
     inspectionPhotosUpload.array('images', 20),
     store
 )

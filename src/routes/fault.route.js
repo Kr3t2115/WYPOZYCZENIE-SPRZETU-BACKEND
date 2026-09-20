@@ -1,7 +1,7 @@
 import express from 'express'
 
 import {
-    validateMiddleware,
+    validate,
     VALIDATION_SOURCE,
 } from '../middleware/validate.middleware.js'
 import {
@@ -18,15 +18,11 @@ import { list, store, show, update } from '../controllers/fault.controller.js'
 
 const faultsRoutes = express.Router()
 
-faultsRoutes.get(
-    '/',
-    validateMiddleware(getSchema, VALIDATION_SOURCE.QUERY),
-    list
-)
+faultsRoutes.get('/', validate(getSchema, VALIDATION_SOURCE.QUERY), list)
 
 faultsRoutes.get(
     '/:id',
-    validateMiddleware(idParamsSchema, VALIDATION_SOURCE.PARAMS),
+    validate(idParamsSchema, VALIDATION_SOURCE.PARAMS),
     show
 )
 
@@ -34,11 +30,11 @@ faultsRoutes.use(roleMiddleware([Role.IT_STAFF, Role.SECRETARIAT]))
 
 faultsRoutes.patch(
     '/:id',
-    validateMiddleware(idParamsSchema, VALIDATION_SOURCE.PARAMS),
-    validateMiddleware(updateSchema),
+    validate(idParamsSchema, VALIDATION_SOURCE.PARAMS),
+    validate(updateSchema),
     update
 )
 
-faultsRoutes.post('/', validateMiddleware(createSchema), store)
+faultsRoutes.post('/', validate(createSchema), store)
 
 export { faultsRoutes }

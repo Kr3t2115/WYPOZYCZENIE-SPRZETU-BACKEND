@@ -11,11 +11,14 @@ import { validateMiddleware } from '../middleware/validate.middleware.js'
 import { loginSchema } from '../schemas/auth.schema.js'
 
 import { authMiddleware } from '../middleware/auth.middleware.js'
+import { passwordResetRoutes } from './password-reset.route.js'
 
 const authRoutes = express.Router()
+
 authRoutes.post('/login', validateMiddleware(loginSchema), login)
 authRoutes.post('/refresh', refresh)
 authRoutes.post('/logout', logout)
+authRoutes.use(passwordResetRoutes)
 
 //  PROTECTED ROUTES
 authRoutes.use(authMiddleware)

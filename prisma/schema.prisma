@@ -25,6 +25,7 @@ model User {
   lastLogin DateTime?
 
   refreshTokens RefreshToken[]
+  passwordResetTokens PasswordResetToken[]
 
   student     Student?
   secretariat Secretariat?
@@ -80,6 +81,19 @@ model RefreshToken {
   expiresAt DateTime
   createdAt DateTime @default(now())
   revoked   Boolean  @default(false)
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId])
+}
+
+model PasswordResetToken {
+  id        String   @id @default(uuid())
+  token     String   @unique
+  userId    String
+  expiresAt DateTime
+  used      Boolean  @default(false)
+  createdAt DateTime @default(now())
 
   user User @relation(fields: [userId], references: [id], onDelete: Cascade)
 

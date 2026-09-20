@@ -1,7 +1,7 @@
 import express from 'express'
 
 import {
-    validateMiddleware,
+    validate,
     VALIDATION_SOURCE,
 } from '../middleware/validate.middleware.js'
 import {
@@ -25,13 +25,13 @@ const rentalExtensionRoutes = express.Router()
 
 rentalExtensionRoutes.get(
     '/',
-    validateMiddleware(getSchema, VALIDATION_SOURCE.QUERY),
+    validate(getSchema, VALIDATION_SOURCE.QUERY),
     list
 )
 
 rentalExtensionRoutes.get(
     '/:id',
-    validateMiddleware(idParamsSchema, VALIDATION_SOURCE.PARAMS),
+    validate(idParamsSchema, VALIDATION_SOURCE.PARAMS),
     show
 )
 
@@ -39,11 +39,11 @@ rentalExtensionRoutes.use(roleMiddleware([Role.IT_STAFF, Role.SECRETARIAT]))
 
 rentalExtensionRoutes.patch(
     '/:id',
-    validateMiddleware(idParamsSchema, VALIDATION_SOURCE.PARAMS),
-    validateMiddleware(updateSchema),
+    validate(idParamsSchema, VALIDATION_SOURCE.PARAMS),
+    validate(updateSchema),
     update
 )
 
-rentalExtensionRoutes.post('/', validateMiddleware(createSchema), store)
+rentalExtensionRoutes.post('/', validate(createSchema), store)
 
 export { rentalExtensionRoutes }

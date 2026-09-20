@@ -76,6 +76,13 @@ const revokeRefreshToken = async (token) => {
     })
 }
 
+const updateUserPassword = async (userId, hashedPassword) => {
+    return prisma.user.update({
+        where: { id: userId },
+        data: { password: hashedPassword },
+    })
+}
+
 export {
     findByEmail,
     findById,
@@ -86,4 +93,5 @@ export {
     createRefreshToken,
     findRefreshToken,
     revokeRefreshToken,
+    updateUserPassword,
 }

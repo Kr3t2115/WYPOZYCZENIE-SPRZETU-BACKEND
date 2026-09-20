@@ -6,7 +6,7 @@ const VALIDATION_SOURCE = Object.freeze({
     PARAMS: 'params',
 })
 
-const validateMiddleware = (schema, source = VALIDATION_SOURCE.BODY) => {
+const validate = (schema, source = VALIDATION_SOURCE.BODY) => {
     return (req, res, next) => {
         const sourceData = {
             params: req.params,
@@ -43,4 +43,4 @@ const validateMiddleware = (schema, source = VALIDATION_SOURCE.BODY) => {
     }
 }
 
-export { validateMiddleware, VALIDATION_SOURCE }
+export { validate, VALIDATION_SOURCE }

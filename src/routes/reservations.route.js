@@ -1,7 +1,7 @@
 import express from 'express'
 
 import {
-    validateMiddleware,
+    validate,
     VALIDATION_SOURCE,
 } from '../middleware/validate.middleware.js'
 import {
@@ -23,28 +23,24 @@ import {
 
 const reservationsRoutes = express.Router()
 
-reservationsRoutes.get(
-    '/',
-    validateMiddleware(getSchema, VALIDATION_SOURCE.QUERY),
-    list
-)
+reservationsRoutes.get('/', validate(getSchema, VALIDATION_SOURCE.QUERY), list)
 
 reservationsRoutes.get(
     '/:id',
-    validateMiddleware(idParamsSchema, VALIDATION_SOURCE.PARAMS),
+    validate(idParamsSchema, VALIDATION_SOURCE.PARAMS),
     show
 )
 
 reservationsRoutes.patch(
     '/:id',
-    validateMiddleware(idParamsSchema, VALIDATION_SOURCE.PARAMS),
-    validateMiddleware(updateSchema),
+    validate(idParamsSchema, VALIDATION_SOURCE.PARAMS),
+    validate(updateSchema),
     update
 )
 
 // Dodawanie rezerwacji możliwe tylko dla studentów
 reservationsRoutes.use(roleMiddleware([Role.STUDENT]))
 
-reservationsRoutes.post('/', validateMiddleware(createSchema), store)
+reservationsRoutes.post('/', validate(createSchema), store)
 
 export { reservationsRoutes }

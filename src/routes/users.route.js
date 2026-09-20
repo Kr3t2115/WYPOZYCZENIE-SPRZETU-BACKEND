@@ -1,7 +1,7 @@
 import express from 'express'
 
 import {
-    validateMiddleware,
+    validate,
     VALIDATION_SOURCE,
 } from '../middleware/validate.middleware.js'
 import { updateSchema, getSchema } from '../schemas/users.schema.js'
@@ -16,22 +16,18 @@ const usersRoutes = express.Router()
 
 usersRoutes.use(roleMiddleware([Role.IT_STAFF, Role.SECRETARIAT]))
 
-usersRoutes.get(
-    '/',
-    validateMiddleware(getSchema, VALIDATION_SOURCE.QUERY),
-    list
-)
+usersRoutes.get('/', validate(getSchema, VALIDATION_SOURCE.QUERY), list)
 
 usersRoutes.get(
     '/:id',
-    validateMiddleware(idParamsSchema, VALIDATION_SOURCE.PARAMS),
+    validate(idParamsSchema, VALIDATION_SOURCE.PARAMS),
     show
 )
 
 usersRoutes.patch(
     '/:id',
-    validateMiddleware(idParamsSchema, VALIDATION_SOURCE.PARAMS),
-    validateMiddleware(updateSchema),
+    validate(idParamsSchema, VALIDATION_SOURCE.PARAMS),
+    validate(updateSchema),
     update
 )
 

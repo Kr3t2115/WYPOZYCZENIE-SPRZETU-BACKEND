@@ -1,7 +1,7 @@
 import express from 'express'
 
 import {
-    validateMiddleware,
+    validate,
     VALIDATION_SOURCE,
 } from '../middleware/validate.middleware.js'
 import { idParamsSchema } from '../schemas/common.schema.js'
@@ -18,7 +18,7 @@ faultsPhotosRoutes.use(roleMiddleware([Role.IT_STAFF, Role.SECRETARIAT]))
 
 faultsPhotosRoutes.post(
     '/uploads',
-    validateMiddleware(idParamsSchema, VALIDATION_SOURCE.PARAMS),
+    validate(idParamsSchema, VALIDATION_SOURCE.PARAMS),
     faultPhotosUpload.array('images', 20),
     store
 )

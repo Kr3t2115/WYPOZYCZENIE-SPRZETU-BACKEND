@@ -8,7 +8,7 @@ import {
 } from '../controllers/equipments-attributes.controller.js'
 
 import {
-    validateMiddleware,
+    validate,
     VALIDATION_SOURCE,
 } from '../middleware/validate.middleware.js'
 
@@ -27,13 +27,13 @@ const equipmentAttributeRoutes = express.Router({ mergeParams: true })
 
 equipmentAttributeRoutes.get(
     '/',
-    validateMiddleware(equipmentIdParams, VALIDATION_SOURCE.PARAMS),
-    validateMiddleware(getSchema, VALIDATION_SOURCE.QUERY),
+    validate(equipmentIdParams, VALIDATION_SOURCE.PARAMS),
+    validate(getSchema, VALIDATION_SOURCE.QUERY),
     list
 )
 equipmentAttributeRoutes.get(
     '/:id',
-    validateMiddleware(equipmentIdParams, VALIDATION_SOURCE.PARAMS),
+    validate(equipmentIdParams, VALIDATION_SOURCE.PARAMS),
     show
 )
 
@@ -41,14 +41,14 @@ equipmentAttributeRoutes.use(roleMiddleware([Role.IT_STAFF, Role.SECRETARIAT]))
 
 equipmentAttributeRoutes.post(
     '/',
-    validateMiddleware(equipmentIdParams, VALIDATION_SOURCE.PARAMS),
-    validateMiddleware(createSchema),
+    validate(equipmentIdParams, VALIDATION_SOURCE.PARAMS),
+    validate(createSchema),
     store
 )
 equipmentAttributeRoutes.patch(
     '/:id',
-    validateMiddleware(equipmentIdParams, VALIDATION_SOURCE.PARAMS),
-    validateMiddleware(updateSchema),
+    validate(equipmentIdParams, VALIDATION_SOURCE.PARAMS),
+    validate(updateSchema),
     update
 )
 
