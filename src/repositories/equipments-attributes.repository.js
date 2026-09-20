@@ -1,8 +1,8 @@
-import { prisma } from '../config/db.config.js'
+import { prisma } from '../lib/db.lib.js'
 
-const insert = async (equipmentAttribute) => {
+const insert = async (data) => {
     return prisma.equipmentAttribute.create({
-        data: equipmentAttribute,
+        data: data,
     })
 }
 

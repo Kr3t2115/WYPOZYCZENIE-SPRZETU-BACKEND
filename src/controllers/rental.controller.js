@@ -1,17 +1,10 @@
 import * as rentalService from '../services/rental.service.js'
 import { getPaginationParams } from '../utils/pagination.util.js'
-import {
-    createSchema,
-    getSchema,
-    updateSchema,
-} from '../schemas/rental.schema.js'
 
 const store = async (req, res, next) => {
     try {
-        const validated = createSchema.parse(req.body)
-
-        const reservation = await rentalService.create(validated, req.user)
-        return res.status(201).json(reservation)
+        const newRental = await rentalService.create(req.body, req.user)
+        return res.status(201).json(newRental)
     } catch (err) {
         next(err)
     }
@@ -19,19 +12,17 @@ const store = async (req, res, next) => {
 
 const list = async (req, res, next) => {
     try {
-        const { page, limit } = req.query
-
-        const filters = getSchema.parse(req.query)
+        const { page, limit, ...filters } = req.query
 
         const pagination = getPaginationParams(page, limit)
 
-        const equipments = await rentalService.getAll(
+        const rentals = await rentalService.getAll(
             filters,
             pagination,
             req.user
         )
 
-        return res.status(200).json(equipments)
+        return res.status(200).json(rentals)
     } catch (err) {
         next(err)
     }
@@ -39,8 +30,8 @@ const list = async (req, res, next) => {
 
 const show = async (req, res, next) => {
     try {
-        const equipment = await rentalService.getById(req.params.id, req.user)
-        return res.status(200).json(equipment)
+        const rental = await rentalService.getById(req.params.id, req.user)
+        return res.status(200).json(rental)
     } catch (err) {
         next(err)
     }
@@ -48,14 +39,12 @@ const show = async (req, res, next) => {
 
 const update = async (req, res, next) => {
     try {
-        const data = updateSchema.parse(req.body)
-
-        const equipments = await rentalService.update(
+        const updatedRental = await rentalService.update(
             req.params.id,
-            data,
+            req.body,
             req.user
         )
-        return res.status(200).json(equipments)
+        return res.status(200).json(updatedRental)
     } catch (err) {
         next(err)
     }

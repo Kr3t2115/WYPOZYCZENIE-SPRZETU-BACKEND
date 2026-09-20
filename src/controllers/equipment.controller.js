@@ -3,8 +3,8 @@ import { getPaginationParams } from '../utils/pagination.util.js'
 
 const store = async (req, res, next) => {
     try {
-        const equipment = await equipmentService.create(req.body)
-        return res.status(201).json(equipment)
+        const newEquipment = await equipmentService.create(req.body)
+        return res.status(201).json(newEquipment)
     } catch (err) {
         next(err)
     }
@@ -18,7 +18,7 @@ const list = async (req, res, next) => {
         const equipments = await equipmentService.getAll(
             filters,
             pagination,
-            req.user.role
+            req.user
         )
         return res.status(200).json(equipments)
     } catch (err) {
@@ -37,11 +37,11 @@ const show = async (req, res, next) => {
 
 const update = async (req, res, next) => {
     try {
-        const equipments = await equipmentService.update(
+        const updatedEquipment = await equipmentService.update(
             req.params.id,
             req.body
         )
-        return res.status(200).json(equipments)
+        return res.status(200).json(updatedEquipment)
     } catch (err) {
         next(err)
     }

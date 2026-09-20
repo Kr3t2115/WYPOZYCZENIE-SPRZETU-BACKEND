@@ -1,7 +1,7 @@
 import * as attributesOptionsRepository from '../repositories/attributes-options.repository.js'
 import * as attributeRepository from '../repositories/attribute.repository.js'
 
-import { ConflictError } from '../utils/errors.util.js'
+import { ConflictError, NotFoundError } from '../utils/errors.util.js'
 import { getPaginationMeta } from '../utils/pagination.util.js'
 import { AttributeType } from '@prisma/client'
 
@@ -9,18 +9,21 @@ const create = async (data) => {
     const attribute = await attributeRepository.findById(data.attributeId)
 
     if (!attribute) {
-        throw new ConflictError('Attribute not found')
+        throw new NotFoundError('Atrybut nie istnieje')
     }
 
     if (attribute.type !== AttributeType.SELECT) {
-        throw new ConflictError('Attribute with this type cannot have options')
+        throw new ConflictError('Atrybut nie jest o typie SELECT (listy)')
     }
 
     const attributeOptions =
-        await attributesOptionsRepository.findByAttributeIdAndValue(data)
+        await attributesOptionsRepository.findByAttributeIdAndValue(
+            data.attributeId,
+            data.value
+        )
 
     if (attributeOptions) {
-        throw new ConflictError('Attribute id with this value exist')
+        throw new ConflictError('Opcja listy o takiej wartości już istnieje')
     }
 
     return attributesOptionsRepository.insert(data)
@@ -30,19 +33,21 @@ const update = async (id, data) => {
     const attributeOption = await attributesOptionsRepository.findById(id)
 
     if (!attributeOption) {
-        throw new ConflictError('Attribute options with this id already exists')
+        throw new NotFoundError('Taka opcja atrybutu nie istnieje')
     }
 
     if (data.value) {
-        const check =
-            await attributesOptionsRepository.findByAttributeIdAndValueWithoutId(
+        const valueCheck =
+            await attributesOptionsRepository.findByAttributeIdAndValue(
                 attributeOption.attributeId,
                 data.value,
                 id
             )
 
-        if (check) {
-            throw new ConflictError('Attribute with this value exist')
+        if (valueCheck) {
+            throw new ConflictError(
+                'Opcja listy o takiej wartości już istnieje'
+            )
         }
     }
 
@@ -51,8 +56,9 @@ const update = async (id, data) => {
 
 const getById = async (id) => {
     const attributeOption = await attributesOptionsRepository.findById(id)
-    if (!attributeOption)
-        throw new ConflictError('Attribute options with this id does not exist')
+    if (!attributeOption) {
+        throw new NotFoundError('Taka opcja atrybutu nie istnieje')
+    }
     return attributeOption
 }
 

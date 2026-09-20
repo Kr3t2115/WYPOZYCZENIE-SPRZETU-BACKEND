@@ -10,4 +10,18 @@ const transporter = nodemailer.createTransport({
     },
 })
 
-export { transporter }
+const send = async ({ to, subject, text, html }) => {
+    try {
+        return transporter.sendMail({
+            from: `<${process.env.MAIL_USER}>`,
+            to,
+            subject,
+            text,
+            html,
+        })
+    } catch (error) {
+        console.log(error)
+    }
+}
+
+export { transporter, send }

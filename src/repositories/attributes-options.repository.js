@@ -1,8 +1,8 @@
-import { prisma } from '../config/db.config.js'
+import { prisma } from '../lib/db.lib.js'
 
-const insert = async (attributeOption) => {
+const insert = async (data) => {
     return prisma.attributeOption.create({
-        data: attributeOption,
+        data: data,
     })
 }
 
@@ -27,7 +27,11 @@ const findById = async (id) => {
     })
 }
 
-const findByAttributeIdAndValue = async ({ attributeId, value }) => {
+const findByAttributeIdAndValue = async (
+    attributeId,
+    value,
+    excludeId = null
+) => {
     return prisma.attributeOption.findFirst({
         where: {
             attributeId: attributeId,
@@ -35,20 +39,7 @@ const findByAttributeIdAndValue = async ({ attributeId, value }) => {
                 equals: value,
                 mode: 'insensitive',
             },
-        },
-    })
-}
-const findByAttributeIdAndValueWithoutId = async (attributeId, value, id) => {
-    return prisma.attributeOption.findFirst({
-        where: {
-            attributeId: attributeId,
-            value: {
-                equals: value,
-                mode: 'insensitive',
-            },
-            id: {
-                not: id,
-            },
+            ...(excludeId && { id: { not: excludeId } }),
         },
     })
 }
@@ -62,12 +53,4 @@ const update = async (id, data) => {
     })
 }
 
-export {
-    insert,
-    findAll,
-    findById,
-    update,
-    count,
-    findByAttributeIdAndValue,
-    findByAttributeIdAndValueWithoutId,
-}
+export { insert, findAll, findById, update, count, findByAttributeIdAndValue }

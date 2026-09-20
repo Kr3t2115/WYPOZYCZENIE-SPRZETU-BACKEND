@@ -1,13 +1,12 @@
 import * as attributesOptionsService from '../services/attributes-options.service.js'
 import { getPaginationParams } from '../utils/pagination.util.js'
-import { getSchema } from '../schemas/attributes-options.schema.js'
 
 const store = async (req, res, next) => {
     try {
-        const categoryAttribute = await attributesOptionsService.create(
+        const newAttributeOption = await attributesOptionsService.create(
             req.body
         )
-        return res.status(201).json(categoryAttribute)
+        return res.status(201).json(newAttributeOption)
     } catch (err) {
         next(err)
     }
@@ -15,16 +14,14 @@ const store = async (req, res, next) => {
 
 const list = async (req, res, next) => {
     try {
-        const { page, limit } = req.query
+        const { page, limit, ...filters } = req.query
         const pagination = getPaginationParams(page, limit)
 
-        let parsedFilters = getSchema.parse(req.query)
-
-        const categoryAttributes = await attributesOptionsService.getAll(
-            parsedFilters,
+        const attributeOptions = await attributesOptionsService.getAll(
+            filters,
             pagination
         )
-        return res.status(200).json(categoryAttributes)
+        return res.status(200).json(attributeOptions)
     } catch (err) {
         next(err)
     }
@@ -32,10 +29,10 @@ const list = async (req, res, next) => {
 
 const show = async (req, res, next) => {
     try {
-        const categoryAttribute = await attributesOptionsService.getById(
+        const attributeOption = await attributesOptionsService.getById(
             req.params.id
         )
-        return res.status(200).json(categoryAttribute)
+        return res.status(200).json(attributeOption)
     } catch (err) {
         next(err)
     }
@@ -43,11 +40,11 @@ const show = async (req, res, next) => {
 
 const update = async (req, res, next) => {
     try {
-        const categoryAttribute = await attributesOptionsService.update(
+        const updatedAttributeOption = await attributesOptionsService.update(
             req.params.id,
             req.body
         )
-        return res.status(200).json(categoryAttribute)
+        return res.status(200).json(updatedAttributeOption)
     } catch (err) {
         next(err)
     }

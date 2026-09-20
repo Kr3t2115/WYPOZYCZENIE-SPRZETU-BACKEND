@@ -1,5 +1,5 @@
 import * as faultRepository from '../repositories/fault.repository.js'
-import { ConflictError } from '../utils/errors.util.js'
+import { ConflictError, NotFoundError } from '../utils/errors.util.js'
 import { getPaginationMeta } from '../utils/pagination.util.js'
 import { Role } from '@prisma/client'
 import * as rentalRepository from '../repositories/rental.repository.js'
@@ -8,11 +8,11 @@ const create = async (data, user) => {
     const rental = await rentalRepository.findById(data.rentalId)
 
     if (!rental) {
-        throw new ConflictError('Fault not found')
+        throw new NotFoundError('Nie znaleziono wypożyczenia')
     }
 
     if (user.role === Role.STUDENT && rental.studentId !== user.id) {
-        throw new ConflictError('Fault not found')
+        throw new ConflictError('To wypożyczenie nie jest twoje')
     }
 
     let insertedData = {
@@ -30,31 +30,21 @@ const update = async (id, data) => {
     const fault = await faultRepository.findById(id)
 
     if (!fault) {
-        throw new ConflictError('Fault not found')
+        throw new NotFoundError('Nie znaleziono szkody')
     }
 
-    let updatedData = {}
-
-    if (data.status) {
-        updatedData.status = data.status
-    }
-
-    if (data.resolveNote) {
-        updatedData.resolveNote = data.resolveNote
-    }
-
-    return faultRepository.update(id, updatedData)
+    return faultRepository.update(id, data)
 }
 
 const getById = async (id, user) => {
     const fault = await faultRepository.findById(id)
 
     if (!fault) {
-        throw new ConflictError('Fault not found')
+        throw new NotFoundError('Nie znaleziono szkody')
     }
 
     if (user.role === Role.STUDENT && fault.reportedBy !== user.id) {
-        throw new ConflictError('Fault not found')
+        throw new ConflictError('To szkoda nie została zgłoszona przez Ciebie')
     }
 
     return fault

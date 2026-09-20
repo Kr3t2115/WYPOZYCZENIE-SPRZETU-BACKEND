@@ -1,4 +1,4 @@
-import { prisma } from '../config/db.config.js'
+import { prisma } from '../lib/db.lib.js'
 
 const insertMany = async (data) => {
     return prisma.inspectionPhoto.createMany({

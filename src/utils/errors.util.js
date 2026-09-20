@@ -6,31 +6,31 @@ class ApiError extends Error {
 }
 
 class ConflictError extends ApiError {
-    constructor(message = 'Conflict') {
+    constructor(message = 'Konflikt danych') {
         super(message, 409)
     }
 }
 
 class NotFoundError extends ApiError {
-    constructor(message = 'Not found') {
+    constructor(message = 'Nie znaleziono') {
         super(message, 404)
     }
 }
 
 class ForbiddenError extends ApiError {
-    constructor(message = 'Forbidden') {
+    constructor(message = 'Brak uprawnień') {
         super(message, 403)
     }
 }
 
 class UnauthorizedError extends ApiError {
-    constructor(message = 'Forbidden') {
+    constructor(message = 'Wymagane uwierzytelnienie') {
         super(message, 401)
     }
 }
 
 class BadRequestError extends ApiError {
-    constructor(message = 'Bad request') {
+    constructor(message = 'Nieprawidłowe żądanie') {
         super(message, 400)
     }
 }

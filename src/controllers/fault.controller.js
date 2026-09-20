@@ -3,8 +3,8 @@ import { getPaginationParams } from '../utils/pagination.util.js'
 
 const store = async (req, res, next) => {
     try {
-        const equipment = await faultService.create(req.body, req.user)
-        return res.status(201).json(equipment)
+        const newFault = await faultService.create(req.body, req.user)
+        return res.status(201).json(newFault)
     } catch (err) {
         next(err)
     }
@@ -15,12 +15,8 @@ const list = async (req, res, next) => {
         const { page, limit, ...filters } = req.query
         const pagination = getPaginationParams(page, limit)
 
-        const equipments = await faultService.getAll(
-            filters,
-            pagination,
-            req.user
-        )
-        return res.status(200).json(equipments)
+        const faults = await faultService.getAll(filters, pagination, req.user)
+        return res.status(200).json(faults)
     } catch (err) {
         next(err)
     }
@@ -28,8 +24,8 @@ const list = async (req, res, next) => {
 
 const show = async (req, res, next) => {
     try {
-        const equipment = await faultService.getById(req.params.id)
-        return res.status(200).json(equipment)
+        const fault = await faultService.getById(req.params.id)
+        return res.status(200).json(fault)
     } catch (err) {
         next(err)
     }
@@ -37,8 +33,8 @@ const show = async (req, res, next) => {
 
 const update = async (req, res, next) => {
     try {
-        const equipments = await faultService.update(req.params.id, req.body)
-        return res.status(200).json(equipments)
+        const updatedFault = await faultService.update(req.params.id, req.body)
+        return res.status(200).json(updatedFault)
     } catch (err) {
         next(err)
     }

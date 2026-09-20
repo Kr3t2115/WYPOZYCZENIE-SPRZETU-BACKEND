@@ -5,8 +5,6 @@ import { getPaginationMeta } from '../utils/pagination.util.js'
 const getAll = async (filters, pagination) => {
     const where = buildWhere(filters)
 
-    console.log(where)
-
     const [data, total] = await Promise.all([
         categoryRepository.findAll(where, pagination),
         categoryRepository.count(where),
@@ -34,22 +32,22 @@ const buildWhere = (filters) => {
 const create = async (data) => {
     const categoryByName = await categoryRepository.findByName(data.name)
     if (categoryByName) {
-        throw new ConflictError(`Category with name: ${data.name} exist`)
+        throw new ConflictError(`Kategoria z tą nazwą istnieje`)
     }
     return categoryRepository.insert(data)
 }
 
 const update = async (id, data) => {
-    await getById(id)
+    const category = await categoryRepository.findById(id)
+    if (!category) {
+        throw new NotFoundError('Kategoria nie istnieje')
+    }
 
     if (data.name) {
-        const categoryExist = await categoryRepository.findByNameWithoutId(
-            data.name,
-            id
-        )
+        const categoryExist = await categoryRepository.findByName(data.name, id)
 
         if (categoryExist) {
-            throw new ConflictError(`Category with name: ${data.name} exist`)
+            throw new ConflictError(`Kategoria z tą nazwą istnieje`)
         }
     }
 
@@ -58,7 +56,9 @@ const update = async (id, data) => {
 
 const getById = async (id) => {
     const category = await categoryRepository.findById(id)
-    if (!category) throw new NotFoundError('Category not found')
+    if (!category) {
+        throw new NotFoundError('Kategoria nie istnieje')
+    }
     return category
 }
 

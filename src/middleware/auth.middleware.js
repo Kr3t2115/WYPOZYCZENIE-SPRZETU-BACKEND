@@ -1,31 +1,38 @@
 import jwt from 'jsonwebtoken'
-import { prisma } from '../config/db.config.js'
+import * as authRepository from '../repositories/auth.repository.js'
+import { UnauthorizedError } from '../utils/errors.util.js'
 
 export const authMiddleware = async (req, res, next) => {
-    let token
-
-    if (req.cookies && req.cookies.access_token) {
-        token = req.cookies.access_token
-    }
-
-    if (!token) {
-        return res.status(401).json({ error: 'No token provided' })
-    }
-
     try {
+        let token
+
+        if (req.cookies && req.cookies.access_token) {
+            token = req.cookies.access_token
+        }
+
+        if (!token) {
+            return next(new UnauthorizedError('Nie podano tokena'))
+        }
+
         const decoded = jwt.verify(token, process.env.JWT_SECRET)
 
-        const user = await prisma.user.findUnique({
-            where: { id: decoded.userId },
-        })
+        const user = await authRepository.findById(decoded.userId)
 
         if (!user) {
-            return res.status(401).json({ error: 'Invalid token' })
+            return next(new UnauthorizedError('Nie podano tokena'))
+        }
+
+        if (!user.isActive) {
+            return next(
+                new UnauthorizedError(
+                    'Użytkownik nieaktywny, zgłoś się do dziekanatu'
+                )
+            )
         }
 
         req.user = user
         next()
     } catch (error) {
-        return res.status(401).json({ error: 'No token provided' })
+        next(error)
     }
 }

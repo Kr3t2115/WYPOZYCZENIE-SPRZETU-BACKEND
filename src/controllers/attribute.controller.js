@@ -3,8 +3,8 @@ import { getPaginationParams } from '../utils/pagination.util.js'
 
 const store = async (req, res, next) => {
     try {
-        const equipment = await attributeService.create(req.body)
-        return res.status(201).json(equipment)
+        const newAttribute = await attributeService.create(req.body)
+        return res.status(201).json(newAttribute)
     } catch (err) {
         next(err)
     }
@@ -15,8 +15,8 @@ const list = async (req, res, next) => {
         const { page, limit, ...filters } = req.query
         const pagination = getPaginationParams(page, limit)
 
-        const equipments = await attributeService.getAll(filters, pagination)
-        return res.status(200).json(equipments)
+        const attributes = await attributeService.getAll(filters, pagination)
+        return res.status(200).json(attributes)
     } catch (err) {
         next(err)
     }
@@ -24,8 +24,8 @@ const list = async (req, res, next) => {
 
 const show = async (req, res, next) => {
     try {
-        const equipment = await attributeService.getById(req.params.id)
-        return res.status(200).json(equipment)
+        const attribute = await attributeService.getById(req.params.id)
+        return res.status(200).json(attribute)
     } catch (err) {
         next(err)
     }
@@ -33,11 +33,11 @@ const show = async (req, res, next) => {
 
 const update = async (req, res, next) => {
     try {
-        const equipments = await attributeService.update(
+        const updatedAttribute = await attributeService.update(
             req.params.id,
             req.body
         )
-        return res.status(200).json(equipments)
+        return res.status(200).json(updatedAttribute)
     } catch (err) {
         next(err)
     }

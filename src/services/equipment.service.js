@@ -1,5 +1,5 @@
 import * as equipmentRepository from '../repositories/equipment.repository.js'
-import { ConflictError } from '../utils/errors.util.js'
+import { NotFoundError } from '../utils/errors.util.js'
 import * as categoryRepository from '../repositories/category.repository.js'
 import { getPaginationMeta } from '../utils/pagination.util.js'
 import { EquipmentStatus, Role } from '@prisma/client'
@@ -8,9 +8,7 @@ const create = async (data) => {
     const equipmentCategory = await categoryRepository.findById(data.categoryId)
 
     if (!equipmentCategory) {
-        throw new ConflictError(
-            `Equipment category with id: ${data.categoryId} not exist`
-        )
+        throw new NotFoundError('Taka kategoria nie istnieje')
     }
 
     return equipmentRepository.insert(data)
@@ -27,7 +25,7 @@ const getAll = async (filters, pagination, role) => {
     return { data, meta: getPaginationMeta(total, pagination) }
 }
 
-const buildWhere = (filters, role) => {
+const buildWhere = (filters, user) => {
     const where = {}
 
     if (filters.name) {
@@ -36,7 +34,7 @@ const buildWhere = (filters, role) => {
 
     const ALLOWED_STATUS_FILTER_ROLES = [Role.IT_STAFF, Role.SECRETARIAT]
 
-    if (ALLOWED_STATUS_FILTER_ROLES.includes(role)) {
+    if (ALLOWED_STATUS_FILTER_ROLES.includes(user.role)) {
         if (filters.status && EquipmentStatus.hasOwnProperty(filters.status)) {
             where.status = { equals: filters.status }
         }
@@ -64,16 +62,19 @@ const buildWhere = (filters, role) => {
 
 const getById = async (id) => {
     const equipment = await equipmentRepository.findById(id)
+
     if (!equipment) {
-        throw new ConflictError(`Equipment with id: ${id} not exist`)
+        throw new NotFoundError('Taki sprzęt nie istnieje')
     }
+
     return equipment
 }
 
 const update = async (id, data) => {
     const equipment = await equipmentRepository.findById(id)
+
     if (!equipment) {
-        throw new ConflictError(`Equipment with id: ${id} not exist`)
+        throw new NotFoundError('Taki sprzęt nie istnieje')
     }
 
     if (data.categoryId) {
@@ -82,9 +83,7 @@ const update = async (id, data) => {
         )
 
         if (!equipmentCategory) {
-            throw new ConflictError(
-                `Equipment category with id: ${id} not exist`
-            )
+            throw new NotFoundError('Taka kategoria nie istnieje')
         }
     }
 

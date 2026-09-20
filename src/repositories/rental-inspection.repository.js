@@ -1,13 +1,18 @@
-import { prisma } from '../config/db.config.js'
+import { prisma } from '../lib/db.lib.js'
 
-const insert = async (reservation) => {
+const insert = async (data) => {
     return prisma.rentalInspection.create({
-        data: reservation,
+        data: data,
     })
 }
 
 const findAll = async (where, { skip, take }) => {
-    return prisma.rentalInspection.findMany({ where, skip, take })
+    return prisma.rentalInspection.findMany({
+        where,
+        skip,
+        take,
+        include: { photos: true },
+    })
 }
 
 const count = async (where) => {
@@ -17,6 +22,7 @@ const count = async (where) => {
 const findById = async (id) => {
     return prisma.rentalInspection.findUnique({
         where: { id: id },
+        include: { photos: true },
     })
 }
 

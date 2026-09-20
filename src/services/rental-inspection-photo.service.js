@@ -7,7 +7,7 @@ const create = async (id, files, user) => {
     const rentalInspection = await rentalInspectionRepository.findById(id)
 
     if (!rentalInspection) {
-        throw new ConflictError('Fault not found')
+        throw new ConflictError('Nie znaleziono inspekcji wypożyczenia')
     }
 
     let photosList = []

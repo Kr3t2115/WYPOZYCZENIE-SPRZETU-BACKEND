@@ -1,6 +1,6 @@
 import bcrypt from 'bcryptjs'
 import jwt from 'jsonwebtoken'
-import { findByEmail } from '../repositories/auth.repository.js'
+import * as authRepository from '../repositories/auth.repository.js'
 import { UnauthorizedError } from '../utils/errors.util.js'
 
 const generateToken = (userId) => {
@@ -15,22 +15,21 @@ const verifyPassword = async (plainPassword, hashedPassword) => {
 }
 
 const login = async (userFormData) => {
-    const user = await findByEmail(userFormData.email)
+    const user = await authRepository.findByEmail(userFormData.email)
 
     if (!user) {
-        throw new UnauthorizedError('Unauthorized')
+        throw new UnauthorizedError('Brak użytkownika w bazie')
     }
 
     const match = await verifyPassword(userFormData.password, user.password)
 
     if (!match) {
-        throw new UnauthorizedError('Unauthorized')
+        throw new UnauthorizedError('Niepoprawne dane logowania')
     }
 
-    const token = generateToken(user.id)
+    await authRepository.updateLastLogin(user.id)
 
-    console.log(token)
-    console.log(user)
+    const token = generateToken(user.id)
 
     return { user, token }
 }

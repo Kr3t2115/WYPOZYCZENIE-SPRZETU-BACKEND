@@ -1,7 +1,5 @@
 import * as attributeRepository from '../repositories/attribute.repository.js'
-import * as categoryRepository from '../repositories/category.repository.js'
-
-import { ConflictError } from '../utils/errors.util.js'
+import { ConflictError, NotFoundError } from '../utils/errors.util.js'
 import { getPaginationMeta } from '../utils/pagination.util.js'
 import { AttributeType } from '@prisma/client'
 
@@ -9,7 +7,7 @@ const create = async (data) => {
     const attribute = await attributeRepository.findByName(data.name)
 
     if (attribute) {
-        throw new ConflictError('Attribute already exists')
+        throw new ConflictError('Atrybut o tej nazwie już istnieje')
     }
 
     return attributeRepository.insert(data)
@@ -19,17 +17,14 @@ const update = async (id, data) => {
     const attribute = await attributeRepository.findById(id)
 
     if (!attribute) {
-        throw new ConflictError('Attribute already exists')
+        throw new NotFoundError('Atrybut nie istnieje')
     }
 
     if (data.name) {
-        const attribute = await attributeRepository.findByNameWithoutId(
-            data.name,
-            id
-        )
+        const attribute = await attributeRepository.findByName(data.name, id)
 
         if (attribute) {
-            throw new ConflictError('Attribute already exists')
+            throw new ConflictError('Atrybut o tej nazwie już istnieje')
         }
     }
 
@@ -37,6 +32,12 @@ const update = async (id, data) => {
 }
 
 const getById = async (id) => {
+    const attribute = await attributeRepository.findById(id)
+
+    if (!attribute) {
+        throw new NotFoundError('Atrybut nie istnieje')
+    }
+
     return attributeRepository.findById(id)
 }
 

@@ -3,11 +3,11 @@ import { getPaginationParams } from '../utils/pagination.util.js'
 
 const store = async (req, res, next) => {
     try {
-        const equipment = await rentalInspectionService.create(
+        const newRentalInspection = await rentalInspectionService.create(
             req.body,
             req.user
         )
-        return res.status(201).json(equipment)
+        return res.status(201).json(newRentalInspection)
     } catch (err) {
         next(err)
     }
@@ -18,12 +18,12 @@ const list = async (req, res, next) => {
         const { page, limit, ...filters } = req.query
         const pagination = getPaginationParams(page, limit)
 
-        const equipments = await rentalInspectionService.getAll(
+        const rentalInspections = await rentalInspectionService.getAll(
             filters,
             pagination,
             req.user
         )
-        return res.status(200).json(equipments)
+        return res.status(200).json(rentalInspections)
     } catch (err) {
         next(err)
     }
@@ -31,8 +31,10 @@ const list = async (req, res, next) => {
 
 const show = async (req, res, next) => {
     try {
-        const equipment = await rentalInspectionService.getById(req.params.id)
-        return res.status(200).json(equipment)
+        const rentalInspection = await rentalInspectionService.getById(
+            req.params.id
+        )
+        return res.status(200).json(rentalInspection)
     } catch (err) {
         next(err)
     }
@@ -40,11 +42,11 @@ const show = async (req, res, next) => {
 
 const update = async (req, res, next) => {
     try {
-        const equipments = await rentalInspectionService.update(
+        const updatedRentalInspection = await rentalInspectionService.update(
             req.params.id,
             req.body
         )
-        return res.status(200).json(equipments)
+        return res.status(200).json(updatedRentalInspection)
     } catch (err) {
         next(err)
     }

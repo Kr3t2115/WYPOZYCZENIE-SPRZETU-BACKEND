@@ -9,9 +9,9 @@ import path from 'path'
 import cors from 'cors'
 import cookieParser from 'cookie-parser'
 import route from './routes/route.js'
-import { errorHandlerUtil } from './utils/error-handler.util.js'
+import { errorHandler } from './utils/error-handler.util.js'
 
-import { connectDB } from './config/db.config.js'
+import { connectDB } from './lib/db.lib.js'
 // import { buildFileMetadata } from './utils/file.util.js'
 // import { faultPhotosUpload } from './lib/upload.lib.js'
 
@@ -79,4 +79,4 @@ app.use('/api', route)
 //     }
 // })
 
-app.use(errorHandlerUtil)
+app.use(errorHandler)

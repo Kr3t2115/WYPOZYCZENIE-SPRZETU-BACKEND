@@ -3,8 +3,8 @@ import { getPaginationParams } from '../utils/pagination.util.js'
 
 const store = async (req, res, next) => {
     try {
-        const equipment = await categoryService.create(req.body)
-        return res.status(201).json(equipment)
+        const newCategory = await categoryService.create(req.body)
+        return res.status(201).json(newCategory)
     } catch (err) {
         next(err)
     }
@@ -15,8 +15,8 @@ const list = async (req, res, next) => {
         const { page, limit, ...filters } = req.query
         const pagination = getPaginationParams(page, limit)
 
-        const equipments = await categoryService.getAll(filters, pagination)
-        return res.status(200).json(equipments)
+        const categories = await categoryService.getAll(filters, pagination)
+        return res.status(200).json(categories)
     } catch (err) {
         next(err)
     }
@@ -24,8 +24,8 @@ const list = async (req, res, next) => {
 
 const show = async (req, res, next) => {
     try {
-        const equipment = await categoryService.getById(req.params.id)
-        return res.status(200).json(equipment)
+        const category = await categoryService.getById(req.params.id)
+        return res.status(200).json(category)
     } catch (err) {
         next(err)
     }
@@ -33,8 +33,11 @@ const show = async (req, res, next) => {
 
 const update = async (req, res, next) => {
     try {
-        const equipments = await categoryService.update(req.params.id, req.body)
-        return res.status(200).json(equipments)
+        const updatedCategory = await categoryService.update(
+            req.params.id,
+            req.body
+        )
+        return res.status(200).json(updatedCategory)
     } catch (err) {
         next(err)
     }

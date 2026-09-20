@@ -1,8 +1,8 @@
-import { prisma } from '../config/db.config.js'
+import { prisma } from '../lib/db.lib.js'
 
-const insert = async (equipment) => {
+const insert = async (data) => {
     return prisma.equipment.create({
-        data: equipment,
+        data: data,
     })
 }
 
@@ -11,7 +11,7 @@ const findAll = async (where, { skip, take }) => {
         where,
         skip,
         take,
-        include: { category: true },
+        include: { category: true, values: true },
     })
 }
 
@@ -22,6 +22,7 @@ const count = async (where) => {
 const findById = async (id) => {
     return prisma.equipment.findUnique({
         where: { id: id },
+        include: { category: true, values: true },
     })
 }
 
@@ -30,12 +31,7 @@ const update = async (id, data) => {
         where: {
             id: id,
         },
-        data: {
-            name: data.name,
-            serialNumber: data.serialNumber,
-            inventoryNumber: data.inventoryNumber,
-            categoryId: data.categoryId,
-        },
+        data: data,
     })
 }
 

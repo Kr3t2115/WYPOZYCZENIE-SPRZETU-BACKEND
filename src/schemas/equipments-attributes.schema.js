@@ -1,7 +1,6 @@
-import { paginationFields, queryBoolean, uuidField } from './common.schema.js'
+import { paginationFields, uuidField } from './common.schema.js'
 import { z } from 'zod'
 
-const equipmentIdField = uuidField
 const attributeIdField = uuidField
 const valueField = z.string().max(255).optional()
 const attributeOptionIdField = uuidField.optional()

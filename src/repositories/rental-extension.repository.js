@@ -1,8 +1,8 @@
-import { prisma } from '../config/db.config.js'
+import { prisma } from '../lib/db.lib.js'
 
-const insert = async (reservation) => {
+const insert = async (data) => {
     return prisma.rentalExtension.create({
-        data: reservation,
+        data: data,
     })
 }
 

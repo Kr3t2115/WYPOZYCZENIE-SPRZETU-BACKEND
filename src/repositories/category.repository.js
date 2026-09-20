@@ -1,8 +1,8 @@
-import { prisma } from '../config/db.config.js'
+import { prisma } from '../lib/db.lib.js'
 
-const insert = async (category) => {
+const insert = async (data) => {
     return prisma.category.create({
-        data: category,
+        data: data,
     })
 }
 
@@ -19,20 +19,10 @@ const findById = async (id) => {
         where: { id: id },
     })
 }
-const findByName = async (name) => {
+const findByName = async (name, excludeId = null) => {
     return prisma.category.findUnique({
         where: { name: name },
-    })
-}
-
-const findByNameWithoutId = async (name, id) => {
-    return prisma.category.findFirst({
-        where: {
-            AND: [
-                { name: { equals: name, mode: 'insensitive' } },
-                { id: { not: id } },
-            ],
-        },
+        ...(excludeId && { id: { not: excludeId } }),
     })
 }
 
@@ -45,12 +35,4 @@ const update = async (id, data) => {
     })
 }
 
-export {
-    insert,
-    findAll,
-    findById,
-    findByName,
-    findByNameWithoutId,
-    update,
-    count,
-}
+export { insert, findAll, findById, findByName, update, count }

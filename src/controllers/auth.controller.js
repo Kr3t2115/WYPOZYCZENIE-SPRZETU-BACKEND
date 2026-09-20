@@ -2,11 +2,11 @@ import * as authService from '../services/auth.service.js'
 
 const isLogged = async (req, res) => {
     if (!req.user) {
-        return res.status(401).json({ message: 'Unauthorized' })
+        return res.status(401).json({ message: 'Niezalogowany' })
     }
 
     return res.status(200).json({
-        message: 'User is logged in',
+        message: 'Użytkownik zalogowany prawidłowo',
     })
 }
 
@@ -25,7 +25,7 @@ const login = async (req, res, next) => {
             })
 
             res.status(200).json({
-                message: 'Login Success',
+                message: 'Użytkownik zalogowany prawidłowo',
                 data: {
                     email: user.email,
                     role: user.role,

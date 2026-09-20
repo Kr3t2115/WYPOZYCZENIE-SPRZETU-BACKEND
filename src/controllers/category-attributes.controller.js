@@ -1,6 +1,5 @@
 import * as categoryAttributesService from '../services/category-attributes.service.js'
 import { getPaginationParams } from '../utils/pagination.util.js'
-import { getSchema } from '../schemas/category-attributes.schema.js'
 
 const store = async (req, res, next) => {
     try {
@@ -15,13 +14,11 @@ const store = async (req, res, next) => {
 
 const list = async (req, res, next) => {
     try {
-        const { page, limit } = req.query
+        const { page, limit, ...filters } = req.query
         const pagination = getPaginationParams(page, limit)
 
-        let parsedFilters = getSchema.parse(req.query)
-
         const categoryAttributes = await categoryAttributesService.getAll(
-            parsedFilters,
+            filters,
             pagination
         )
         return res.status(200).json(categoryAttributes)
@@ -41,8 +38,6 @@ const show = async (req, res, next) => {
     }
 }
 
-// TODO: Zrobić orderowanie tego bo obecnie nie można zmienić kolejności, bo wszystko się wywala
-
 const update = async (req, res, next) => {
     try {
         const categoryAttribute = await categoryAttributesService.update(
@@ -59,7 +54,7 @@ const destroy = async (req, res, next) => {
     try {
         await categoryAttributesService.delete(req.params.id)
         return res.status(200).json({
-            message: 'Removed',
+            message: 'Usunięto pomyślnie',
         })
     } catch (err) {
         next(err)

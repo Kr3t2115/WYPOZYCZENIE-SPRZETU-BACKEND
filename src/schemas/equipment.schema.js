@@ -10,7 +10,6 @@ const statusField = z.enum(EquipmentStatus)
 
 const createSchema = z.object({
     name: nameField,
-    status: statusField,
     inventoryNumber: inventoryNumberField,
     serialNumber: serialNumberField,
     categoryId: uuidField,

@@ -2,11 +2,17 @@ import * as equipmentsAttributeRepository from '../repositories/equipments-attri
 import * as attributeRepository from '../repositories/attribute.repository.js'
 import * as attributeOptionsRepository from '../repositories/attributes-options.repository.js'
 
-import { ConflictError } from '../utils/errors.util.js'
+import { ConflictError, NotFoundError } from '../utils/errors.util.js'
 import { getPaginationMeta } from '../utils/pagination.util.js'
 import { AttributeType } from '@prisma/client'
 
 const create = async (equipmentId, data) => {
+    const attribute = await attributeRepository.findById(data.attributeId)
+
+    if (!attribute) {
+        throw new NotFoundError('Ten atrybut nie istnieje')
+    }
+
     const checkUnique =
         await equipmentsAttributeRepository.findByEquipmentAndAttributeId(
             equipmentId,
@@ -14,13 +20,7 @@ const create = async (equipmentId, data) => {
         )
 
     if (checkUnique) {
-        throw new ConflictError('Equipment with this attribute already exists')
-    }
-
-    const attribute = await attributeRepository.findById(data.attributeId)
-
-    if (!attribute) {
-        throw new ConflictError('')
+        throw new ConflictError('Sprzęt z tym atrybutem już istnieje')
     }
 
     let valueFields = {}
@@ -28,7 +28,7 @@ const create = async (equipmentId, data) => {
     if (data.attributeOptionId) {
         if (attribute.type !== AttributeType.SELECT) {
             throw new ConflictError(
-                'Cannot update attributeOptionId where is not SELECT'
+                'Nie można zaktualizować attributeOptionId jeżeli typ atrybutu to nie jest SELECT (pole wyboru)'
             )
         }
 
@@ -37,7 +37,7 @@ const create = async (equipmentId, data) => {
         )
 
         if (!attributeOption) {
-            throw new ConflictError('Attribute option does not exist')
+            throw new NotFoundError('Opcja atrybutu nie istnieje')
         }
 
         valueFields = {
@@ -45,7 +45,9 @@ const create = async (equipmentId, data) => {
         }
     } else if (data.value) {
         if (attribute.type === AttributeType.SELECT) {
-            throw new ConflictError('Cannot update value where is SELECT')
+            throw new ConflictError(
+                'Nie można zaktualizować wartości jeżeli pole to SELECT (lista wyboru)'
+            )
         }
 
         valueFields = { value: data.value }
@@ -78,17 +80,17 @@ const buildWhere = (equipmentId, filters, role) => {
 }
 
 const getById = async (id) => {
-    const equipment = await equipmentsAttributeRepository.findById(id)
-    if (!equipment) {
-        throw new ConflictError(`Equipment with id: ${id} not exist`)
+    const equipmentAttribute = await equipmentsAttributeRepository.findById(id)
+    if (!equipmentAttribute) {
+        throw new NotFoundError(`Atrybut sprzętu nie istnieje`)
     }
-    return equipment
+    return equipmentAttribute
 }
 
 const update = async (id, data) => {
     const equipmentAttribute = await equipmentsAttributeRepository.findById(id)
     if (!equipmentAttribute) {
-        throw new ConflictError(`Equipment Attribute with id: ${id} not exist`)
+        throw new NotFoundError(`Atrybut sprzętu nie istnieje`)
     }
 
     let updatedData = {}
@@ -97,11 +99,9 @@ const update = async (id, data) => {
         equipmentAttribute.attributeId
     )
 
-    console.log(attribute)
-
     if (attribute.type === AttributeType.SELECT) {
         if (!data.attributeOptionId) {
-            throw new ConflictError('Attribute option does not exist')
+            throw new NotFoundError('Opcja atrybutu nie istnieje')
         }
 
         updatedData = {
@@ -109,7 +109,7 @@ const update = async (id, data) => {
         }
     } else {
         if (!data.value) {
-            throw new ConflictError('Value not exists')
+            throw new ConflictError('Brak wartości')
         }
 
         updatedData = {

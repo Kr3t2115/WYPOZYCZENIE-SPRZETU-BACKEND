@@ -8,9 +8,13 @@ import { EquipmentStatus, ReservationStatus, Role } from '@prisma/client'
 const create = async (data, student) => {
     const equipment = await equipmentRepository.findById(data.equipmentId)
 
-    if (!equipment || equipment.status !== EquipmentStatus.AVAILABLE) {
+    if (!equipment) {
+        throw new ConflictError(`Taki sprzęt nie istnieje`)
+    }
+
+    if (equipment.status !== EquipmentStatus.AVAILABLE) {
         throw new ConflictError(
-            `Equipment with id: ${data.equipmentId} not exist`
+            'Status sprzętu musi być na AVAILABLE (dostępny)'
         )
     }
 
@@ -58,13 +62,13 @@ const update = async (id, data, user) => {
             }
 
             const checkDateConfilict =
-                await reservationsRepository.findReservationConflictWithoutId(
-                    id,
+                await reservationsRepository.findReservationConflict(
                     {
                         equipmentId: data.equipmentId,
                         setDate: newStartDate,
                         endDate: newEndDate,
-                    }
+                    },
+                    id
                 )
 
             if (checkDateConfilict) {

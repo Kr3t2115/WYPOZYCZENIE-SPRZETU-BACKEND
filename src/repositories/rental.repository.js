@@ -1,8 +1,8 @@
-import { prisma } from '../config/db.config.js'
+import { prisma } from '../lib/db.lib.js'
 
-const insert = async (reservation) => {
+const insert = async (data) => {
     return prisma.rental.create({
-        data: reservation,
+        data: data,
     })
 }
 
@@ -20,28 +20,17 @@ const findById = async (id) => {
     })
 }
 
-const findReservationConflict = async ({ equipmentId, startDate, endDate }) => {
-    return prisma.rental.findFirst({
-        where: {
-            equipmentId,
-            status: { in: ['PENDING', 'APPROVED'] },
-            startDate: { lte: endDate },
-            endDate: { gte: startDate },
-        },
-    })
-}
-
-const findReservationConflictWithoutId = async (
-    id,
-    { equipmentId, startDate, endDate }
+const findRentalDateConflict = async (
+    { equipmentId, startDate, endDate },
+    excludeId = null
 ) => {
     return prisma.rental.findFirst({
         where: {
             equipmentId,
-            id: { not: id },
             status: { in: ['PENDING', 'APPROVED'] },
             startDate: { lte: endDate },
             endDate: { gte: startDate },
+            ...(excludeId && { id: { not: excludeId } }),
         },
     })
 }
@@ -55,12 +44,4 @@ const update = async (id, data) => {
     })
 }
 
-export {
-    insert,
-    findAll,
-    findById,
-    update,
-    count,
-    findReservationConflict,
-    findReservationConflictWithoutId,
-}
+export { insert, findAll, findById, update, count, findRentalDateConflict }

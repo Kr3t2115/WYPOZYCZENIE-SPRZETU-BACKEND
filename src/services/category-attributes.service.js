@@ -36,7 +36,7 @@ const create = async (data) => {
         await categoryAttributesRepository.findByCategoryIdAndAttributeId(data)
 
     if (checkAttributeExistence) {
-        throw new ConflictError('Category with this attribute already exists')
+        throw new ConflictError('Kategoria z tym atrybutem obecnie istnieje')
     }
 
     const currentCountAttributes =
@@ -50,7 +50,11 @@ const create = async (data) => {
 }
 
 const update = async (id, data) => {
-    await getById(id)
+    const categoryAttribute = await categoryAttributesRepository.findById(id)
+    if (!categoryAttribute) {
+        throw new NotFoundError('Nie znaleziono atrybutu kategorii')
+    }
+
     return categoryAttributesRepository.update(id, data)
 }
 
@@ -60,7 +64,9 @@ const remove = async (id) => {
 
 const getById = async (id) => {
     const categoryAttribute = await categoryAttributesRepository.findById(id)
-    if (!categoryAttribute) throw new NotFoundError('Category not found')
+    if (!categoryAttribute) {
+        throw new NotFoundError('Nie znaleziono atrybutu kategorii')
+    }
     return categoryAttribute
 }
 

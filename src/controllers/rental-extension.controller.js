@@ -1,20 +1,13 @@
 import * as rentalExtensionService from '../services/rental-extension.service.js'
 import { getPaginationParams } from '../utils/pagination.util.js'
-import {
-    createSchema,
-    getSchema,
-    updateSchema,
-} from '../schemas/rental-extension.schema.js'
 
 const store = async (req, res, next) => {
     try {
-        const validated = createSchema.parse(req.body)
-
-        const reservation = await rentalExtensionService.create(
-            validated,
+        const newRentalExtension = await rentalExtensionService.create(
+            req.body,
             req.user
         )
-        return res.status(201).json(reservation)
+        return res.status(201).json(newRentalExtension)
     } catch (err) {
         next(err)
     }
@@ -22,19 +15,17 @@ const store = async (req, res, next) => {
 
 const list = async (req, res, next) => {
     try {
-        const { page, limit } = req.query
-
-        const filters = getSchema.parse(req.query)
+        const { page, limit, ...filters } = req.query
 
         const pagination = getPaginationParams(page, limit)
 
-        const equipments = await rentalExtensionService.getAll(
+        const rentalExtensions = await rentalExtensionService.getAll(
             filters,
             pagination,
             req.user
         )
 
-        return res.status(200).json(equipments)
+        return res.status(200).json(rentalExtensions)
     } catch (err) {
         next(err)
     }
@@ -42,11 +33,11 @@ const list = async (req, res, next) => {
 
 const show = async (req, res, next) => {
     try {
-        const equipment = await rentalExtensionService.getById(
+        const rentalExtension = await rentalExtensionService.getById(
             req.params.id,
             req.user
         )
-        return res.status(200).json(equipment)
+        return res.status(200).json(rentalExtension)
     } catch (err) {
         next(err)
     }
@@ -54,14 +45,12 @@ const show = async (req, res, next) => {
 
 const update = async (req, res, next) => {
     try {
-        const data = updateSchema.parse(req.body)
-
-        const equipments = await rentalExtensionService.update(
+        const updatedRentalExtension = await rentalExtensionService.update(
             req.params.id,
-            data,
+            req.body,
             req.user
         )
-        return res.status(200).json(equipments)
+        return res.status(200).json(updatedRentalExtension)
     } catch (err) {
         next(err)
     }

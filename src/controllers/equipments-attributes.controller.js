@@ -3,14 +3,11 @@ import { getPaginationParams } from '../utils/pagination.util.js'
 
 const store = async (req, res, next) => {
     try {
-        let data = req.body
-        let equipmentId = req.params.equipmentId
-
-        const equipment = await equipmentsAttributeService.create(
-            equipmentId,
+        const newEquipmentAttribute = await equipmentsAttributeService.create(
+            req.params.equipmentId,
             req.body
         )
-        return res.status(201).json(equipment)
+        return res.status(201).json(newEquipmentAttribute)
     } catch (err) {
         next(err)
     }
@@ -21,13 +18,13 @@ const list = async (req, res, next) => {
         const { page, limit, ...filters } = req.query
         const pagination = getPaginationParams(page, limit)
 
-        const equipments = await equipmentsAttributeService.getAll(
+        const equipmentAttributes = await equipmentsAttributeService.getAll(
             req.params.equipmentId,
             filters,
             pagination,
-            req.user.role
+            req.user
         )
-        return res.status(200).json(equipments)
+        return res.status(200).json(equipmentAttributes)
     } catch (err) {
         next(err)
     }
@@ -35,10 +32,10 @@ const list = async (req, res, next) => {
 
 const show = async (req, res, next) => {
     try {
-        const equipment = await equipmentsAttributeService.getById(
+        const equipmentAttribute = await equipmentsAttributeService.getById(
             req.params.id
         )
-        return res.status(200).json(equipment)
+        return res.status(200).json(equipmentAttribute)
     } catch (err) {
         next(err)
     }
@@ -46,11 +43,10 @@ const show = async (req, res, next) => {
 
 const update = async (req, res, next) => {
     try {
-        const equipments = await equipmentsAttributeService.update(
-            req.params.id,
-            req.body
-        )
-        return res.status(200).json(equipments)
+        const updatedEquipmentAttribute =
+            await equipmentsAttributeService.update(req.params.id, req.body)
+
+        return res.status(200).json(updatedEquipmentAttribute)
     } catch (err) {
         next(err)
     }

@@ -1,8 +1,8 @@
-import { prisma } from '../config/db.config.js'
+import { prisma } from '../lib/db.lib.js'
 
-const insert = async (attribute) => {
+const insert = async (data) => {
     return prisma.attribute.create({
-        data: attribute,
+        data: data,
     })
 }
 
@@ -17,21 +17,20 @@ const count = async (where) => {
 const findById = async (id) => {
     return prisma.attribute.findUnique({
         where: { id: id },
-    })
-}
-const findByName = async (name) => {
-    return prisma.attribute.findUnique({
-        where: { name: name },
+        include: {
+            options: true,
+        },
     })
 }
 
-const findByNameWithoutId = async (name, id) => {
+const findByName = async (name, excludeId = null) => {
     return prisma.attribute.findFirst({
         where: {
-            AND: [
-                { name: { equals: name, mode: 'insensitive' } },
-                { id: { not: id } },
-            ],
+            name: { equals: name, mode: 'insensitive' },
+            ...(excludeId && { id: { not: excludeId } }),
+        },
+        include: {
+            options: true,
         },
     })
 }
@@ -45,12 +44,4 @@ const update = async (id, data) => {
     })
 }
 
-export {
-    insert,
-    findAll,
-    findById,
-    findByName,
-    findByNameWithoutId,
-    update,
-    count,
-}
+export { insert, findAll, findById, findByName, update, count }

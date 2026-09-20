@@ -1,7 +1,7 @@
 import * as faultRepository from '../repositories/fault.repository.js'
 import * as faultPhotoRepository from '../repositories/fault-photo.repository.js'
 
-import { ConflictError } from '../utils/errors.util.js'
+import { ConflictError, NotFoundError } from '../utils/errors.util.js'
 import { Role } from '@prisma/client'
 import { buildFileMetadata } from '../utils/file.util.js'
 
@@ -9,11 +9,11 @@ const create = async (id, files, user) => {
     const fault = await faultRepository.findById(id)
 
     if (!fault) {
-        throw new ConflictError('Fault not found')
+        throw new NotFoundError('Nie znaleziono szkody')
     }
 
     if (user.role === Role.STUDENT && fault.reportedBy !== user.id) {
-        throw new ConflictError('Fault not found')
+        throw new ConflictError('To nie jest szkoda zaraportowana przez Ciebie')
     }
 
     let photosList = []

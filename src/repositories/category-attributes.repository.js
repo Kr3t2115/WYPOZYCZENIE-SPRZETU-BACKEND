@@ -1,8 +1,8 @@
-import { prisma } from '../config/db.config.js'
+import { prisma } from '../lib/db.lib.js'
 
-const insert = async (categoryAttribute) => {
+const insert = async (data) => {
     return prisma.categoryAttribute.create({
-        data: categoryAttribute,
+        data: data,
     })
 }
 
@@ -43,19 +43,10 @@ const findById = async (id) => {
     })
 }
 
-const findByCategoryId = async (categoryId) => {
-    return prisma.categoryAttribute.findMany({
-        where: { categoryId: categoryId },
-    })
-}
-
 const findByCategoryIdAndAttributeId = async ({ categoryId, attributeId }) => {
     return prisma.categoryAttribute.findFirst({
         where: {
-            AND: [
-                { categoryId: { equals: categoryId } },
-                { attributeId: { equals: attributeId } },
-            ],
+            AND: [{ categoryId: categoryId }, { attributeId: attributeId }],
         },
     })
 }
@@ -79,7 +70,6 @@ export {
     insert,
     findAll,
     findById,
-    findByCategoryId,
     findByCategoryIdAndAttributeId,
     update,
     count,

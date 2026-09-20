@@ -1,10 +1,5 @@
 import { z } from 'zod'
-import {
-    EquipmentStatus,
-    FaultSeverity,
-    FaultStatus,
-    OccurrenceType,
-} from '@prisma/client'
+import { FaultSeverity, FaultStatus, OccurrenceType } from '@prisma/client'
 import { paginationFields, uuidField } from './common.schema.js'
 
 const descriptionField = z.string().min(10).max(1000)

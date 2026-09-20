@@ -2,10 +2,11 @@ import * as rentalRepository from '../repositories/rental.repository.js'
 import * as reservationRepository from '../repositories/reservations.repository.js'
 import * as equipmentRepository from '../repositories/equipment.repository.js'
 
-import { ConflictError } from '../utils/errors.util.js'
+import { ConflictError, NotFoundError } from '../utils/errors.util.js'
 import { getPaginationMeta } from '../utils/pagination.util.js'
 import { EquipmentStatus, ReservationStatus, Role } from '@prisma/client'
 import { RentalCreationMode } from '../schemas/rental.schema.js'
+import * as authRepository from '../repositories/auth.repository.js'
 
 const create = async (data, user) => {
     let insertedData = {
@@ -20,11 +21,11 @@ const create = async (data, user) => {
         )
 
         if (!reservation) {
-            throw new ConflictError('Reservation not found')
+            throw new NotFoundError('Rezerwacja nie istnieje')
         }
 
         if (reservation.status !== ReservationStatus.APPROVED) {
-            throw new ConflictError('Reservation not found aaa')
+            throw new ConflictError('Rezerwacja musi być zaakceptowana')
         }
 
         if (reservation.startDate > currentDate) {
@@ -56,39 +57,42 @@ const create = async (data, user) => {
             status: EquipmentStatus.RENTED,
         })
     } else if (data.mode === RentalCreationMode.MANUAL) {
+        const student = await authRepository.findById(data.studentId)
+
+        if (!student) {
+            throw new NotFoundError('Taki student nie istnieje')
+        }
+
+        const equipment = await equipmentRepository.findById(data.equipmentId)
+
+        if (!equipment) {
+            throw new NotFoundError('Sprzęt nie istnieje')
+        }
+
+        if (equipment.status !== EquipmentStatus.AVAILABLE) {
+            throw new ConflictError('Sprzęt musi być dostępny obecnie')
+        }
+
         if (data.startDate > currentDate) {
             throw new ConflictError(
                 'Data rozpoczęcia wypożyczenia musi być w przedziale od dnia rozpoczęcia do zakończenia'
             )
         }
 
-        const equipment = await equipmentRepository.findById(data.equipmentId)
-
-        if (!equipment) {
-            throw new ConflictError('Reservation not found')
-        }
-
-        if (equipment.status !== EquipmentStatus.AVAILABLE) {
-            throw new ConflictError('Reservation not found')
-        }
-
         const dateValidation =
-            await reservationRepository.findReservationConflict({
+            await reservationRepository.findReservationDateConflict({
                 equipmentId: data.equipmentId,
                 startDate: currentDate,
                 endDate: currentDate,
             })
 
         if (dateValidation) {
-            throw new ConflictError('Reservation not found')
+            throw new ConflictError('W tym terminie jest już inna rezewacja')
         }
 
         insertedData = {
             ...insertedData,
-            studentId: data.studentId,
-            equipmentId: data.equipmentId,
-            startDate: data.startDate,
-            dueDate: data.dueDate,
+            ...data,
         }
 
         await equipmentRepository.update(data.equipmentId, {
@@ -101,17 +105,14 @@ const create = async (data, user) => {
 
 const update = async (id, data, user) => {
     const rental = await rentalRepository.findById(id)
-    let updatedData = {}
-
-    updatedData.receivedBy = user.id
 
     if (!rental) {
-        throw new ConflictError('Rental nie istnieje')
+        throw new NotFoundError('Wydanie nie znalezione')
     }
 
-    updatedData = {
+    const updatedData = {
         ...data,
-        ...updatedData,
+        receivedBy: user.id,
     }
 
     return rentalRepository.update(id, updatedData)
@@ -121,11 +122,11 @@ const getById = async (id, user) => {
     const rental = await rentalRepository.findById(id)
 
     if (!rental) {
-        throw new ConflictError('Reservation not found')
+        throw new NotFoundError('Wydanie nie znalezione')
     }
 
     if (user.role === Role.STUDENT && rental.studentId !== user.id) {
-        throw new ConflictError('Reservation not found')
+        throw new ConflictError('To wydanie nie jest przypisane do Ciebie')
     }
 
     return rental

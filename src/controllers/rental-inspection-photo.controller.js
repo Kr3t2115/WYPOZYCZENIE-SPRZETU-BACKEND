@@ -2,12 +2,10 @@ import * as rentalInspectionPhotoService from '../services/rental-inspection-pho
 
 const store = async (req, res, next) => {
     try {
-        const equipment = await rentalInspectionPhotoService.create(
-            req.params.id,
-            req.files
-        )
+        const newRentalInspectionPhotos =
+            await rentalInspectionPhotoService.create(req.params.id, req.files)
 
-        return res.status(201).json(equipment)
+        return res.status(201).json(newRentalInspectionPhotos)
     } catch (err) {
         next(err)
     }
