@@ -12,6 +12,7 @@ import route from './routes/route.js'
 import { errorHandler } from './utils/error-handler.util.js'
 
 import { connectDB } from './lib/db.lib.js'
+import { startScheduler } from './lib/scheduler.lib.js'
 // import { buildFileMetadata } from './utils/file.util.js'
 // import { faultPhotosUpload } from './lib/upload.lib.js'
 
@@ -33,6 +34,8 @@ app.use(
 app.use(cookieParser())
 
 const PORT = process.env.PORT
+
+startScheduler()
 
 const server = app.listen(PORT, () => {
     console.log(`Server running on port ${PORT}`)

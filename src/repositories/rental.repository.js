@@ -1,4 +1,6 @@
 import { prisma } from '../lib/db.lib.js'
+import { endOfDay, startOfDay } from '../utils/date.util.js'
+import { RentalStatus } from '@prisma/client'
 
 const insert = async (data) => {
     return prisma.rental.create({
@@ -43,5 +45,36 @@ const update = async (id, data) => {
         data: data,
     })
 }
+const findActiveDueOn = async (date) => {
+    const start = startOfDay(date)
+    const end = endOfDay(date)
 
-export { insert, findAll, findById, update, count, findRentalDateConflict }
+    return prisma.rental.findMany({
+        where: {
+            status: RentalStatus.ACTIVE,
+            dueDate: { gte: start, lte: end },
+        },
+        include: { equipment: true, student: true },
+    })
+}
+
+const findNewlyOverdue = async (today) => {
+    return prisma.rental.findMany({
+        where: {
+            status: RentalStatus.ACTIVE,
+            dueDate: { lt: startOfDay(today) },
+        },
+        include: { equipment: true, student: true },
+    })
+}
+
+export {
+    insert,
+    findAll,
+    findById,
+    update,
+    count,
+    findRentalDateConflict,
+    findActiveDueOn,
+    findNewlyOverdue,
+}
