@@ -4,7 +4,7 @@ import { getPaginationParams } from '../utils/pagination.util.js'
 const store = async (req, res, next) => {
     try {
         const newEquipmentAttribute = await equipmentsAttributeService.create(
-            req.params.equipmentId,
+            req.params.id,
             req.body
         )
         return res.status(201).json(newEquipmentAttribute)
@@ -19,7 +19,7 @@ const list = async (req, res, next) => {
         const pagination = getPaginationParams(page, limit)
 
         const equipmentAttributes = await equipmentsAttributeService.getAll(
-            req.params.equipmentId,
+            req.params.id,
             filters,
             pagination,
             req.user

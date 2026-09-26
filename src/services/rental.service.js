@@ -5,7 +5,12 @@ import * as usersRepository from '../repositories/users.repository.js'
 
 import { ConflictError, NotFoundError } from '../utils/errors.util.js'
 import { getPaginationMeta } from '../utils/pagination.util.js'
-import { EquipmentStatus, ReservationStatus, Role } from '@prisma/client'
+import {
+    EquipmentStatus,
+    RentalStatus,
+    ReservationStatus,
+    Role,
+} from '@prisma/client'
 import { RentalCreationMode } from '../schemas/rental.schema.js'
 
 const create = async (data, user) => {
@@ -49,12 +54,14 @@ const create = async (data, user) => {
             reservationId: reservation.id,
         }
 
-        await reservationRepository.update(reservation.id, {
-            status: ReservationStatus.COMPLETED,
-        })
+        await this.prisma.$transaction(async (tx) => {
+            await reservationRepository.update(reservation.id, {
+                status: ReservationStatus.COMPLETED,
+            })
 
-        await equipmentRepository.update(reservation.equipmentId, {
-            status: EquipmentStatus.RENTED,
+            await equipmentRepository.update(reservation.equipmentId, {
+                status: EquipmentStatus.RENTED,
+            })
         })
     } else if (data.mode === RentalCreationMode.MANUAL) {
         const student = await usersRepository.findById(data.studentId)
@@ -73,7 +80,7 @@ const create = async (data, user) => {
             throw new ConflictError('Sprzęt musi być dostępny obecnie')
         }
 
-        if (data.startDate > currentDate) {
+        if (data.startDate < currentDate) {
             throw new ConflictError(
                 'Data rozpoczęcia wypożyczenia musi być w przedziale od dnia rozpoczęcia do zakończenia'
             )
@@ -92,7 +99,11 @@ const create = async (data, user) => {
 
         insertedData = {
             ...insertedData,
-            ...data,
+            studentId: data.studentId,
+            equipmentId: data.equipmentId,
+            startDate: data.startDate,
+            dueDate: data.dueDate,
+            reservationId: data.id,
         }
 
         await equipmentRepository.update(data.equipmentId, {
@@ -110,9 +121,17 @@ const update = async (id, data, user) => {
         throw new NotFoundError('Wydanie nie znalezione')
     }
 
-    const updatedData = {
+    let updatedData = {
         ...data,
-        receivedBy: user.id,
+    }
+
+    if (data.status === RentalStatus.RETURNED) {
+        updatedData.returnedAt = new Date()
+        updatedData.receivedBy = user.id
+
+        await equipmentRepository.update(rental.equipmentId, {
+            status: EquipmentStatus.AVAILABLE,
+        })
     }
 
     return rentalRepository.update(id, updatedData)

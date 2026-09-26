@@ -37,8 +37,14 @@ const validate = (schema, source = VALIDATION_SOURCE.BODY) => {
             return res.status(400).json({ validationErrors })
         }
 
-        req[source] = result.data
-
+        if (source === VALIDATION_SOURCE.QUERY) {
+            for (const key of Object.keys(req.query)) {
+                delete req.query[key]
+            }
+            Object.assign(req.query, result.data)
+        } else {
+            req[source] = result.data
+        }
         next()
     }
 }

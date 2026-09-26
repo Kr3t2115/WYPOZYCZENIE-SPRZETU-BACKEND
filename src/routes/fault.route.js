@@ -32,18 +32,17 @@ faultsRoutes.get(
     show
 )
 
-faultsRoutes.use(roleMiddleware([Role.IT_STAFF, Role.SECRETARIAT]))
-
 faultsRoutes.patch(
     '/:id',
+    roleMiddleware([Role.IT_STAFF, Role.SECRETARIAT]),
     validate(idParamsSchema, VALIDATION_SOURCE.PARAMS),
     validate(updateSchema),
     update
 )
 
-faultsRoutes.post('/', validate(createSchema), store)
-
 faultsRoutes.use(roleMiddleware([Role.STUDENT]))
+
+faultsRoutes.post('/', validate(createSchema), store)
 
 faultsRoutes.post(
     '/:id/regenerate-upload-token',

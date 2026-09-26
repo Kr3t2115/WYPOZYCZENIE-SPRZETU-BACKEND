@@ -4,7 +4,8 @@ import { Role } from '@prisma/client'
 
 const firstNameField = z.string().min(1).max(100)
 const lastNameField = z.string().min(1).max(100)
-const isActiveField = queryBoolean
+const isActiveField = z.boolean()
+const isActiveGetField = queryBoolean
 const roleField = z.enum(Role)
 
 const updateSchema = z.object({
@@ -16,7 +17,7 @@ const updateSchema = z.object({
 
 const getSchema = z.object({
     ...paginationFields.shape,
-    isActive: isActiveField.optional(),
+    isActive: isActiveGetField.optional(),
     role: roleField.optional(),
     firstName: firstNameField.optional(),
     lastName: lastNameField.optional(),

@@ -3,6 +3,7 @@ import { ConflictError, NotFoundError } from '../utils/errors.util.js'
 import { getPaginationMeta } from '../utils/pagination.util.js'
 import { Role } from '@prisma/client'
 import * as rentalRepository from '../repositories/rental.repository.js'
+import crypto from 'crypto'
 
 const create = async (data, user) => {
     const rental = await rentalRepository.findById(data.rentalId)
@@ -31,14 +32,20 @@ const create = async (data, user) => {
     return faultRepository.insert(insertedData)
 }
 
-const update = async (id, data) => {
+const update = async (id, data, user) => {
     const fault = await faultRepository.findById(id)
 
     if (!fault) {
         throw new NotFoundError('Nie znaleziono szkody')
     }
 
-    return faultRepository.update(id, data)
+    let updatedData = {
+        ...data,
+        resolvedBy: user.id,
+        resolvedAt: new Date(),
+    }
+
+    return faultRepository.update(id, updatedData)
 }
 
 const getById = async (id, user) => {
@@ -76,11 +83,15 @@ const buildWhere = (filters, user) => {
     return where
 }
 
-const regenerateUploadToken = async (id) => {
+const regenerateUploadToken = async (id, user) => {
     const fault = await faultRepository.findById(id)
 
     if (!fault) {
         throw new NotFoundError('Zgłoszenie nie istnieje')
+    }
+
+    if (fault.reportedBy !== user.id) {
+        throw new ConflictError('To zgłoszenie nie jest twoje')
     }
 
     if (

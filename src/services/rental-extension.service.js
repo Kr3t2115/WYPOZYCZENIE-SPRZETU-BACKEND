@@ -1,4 +1,4 @@
-import * as rentalRepository from '../repositories/reservations.repository.js'
+import * as rentalRepository from '../repositories/rental.repository.js'
 import * as rentalExtensionRepository from '../repositories/rental-extension.repository.js'
 
 import { ConflictError, NotFoundError } from '../utils/errors.util.js'
@@ -11,6 +11,19 @@ const create = async (data, student) => {
 
     if (!rental) {
         throw new NotFoundError('Wypożycznenie nie istnieje')
+    }
+
+    if (data.newDueDate < rental.dueDate) {
+        throw new ConflictError(
+            'Nowa data nie może być mniejsza od obecnej końcowej'
+        )
+    }
+
+    const checkExistingExtension =
+        await rentalExtensionRepository.findByRentalId(data.rentalId)
+
+    if (checkExistingExtension) {
+        throw new ConflictError('Przedłużenie istnieje')
     }
 
     if (rental.studentId !== student.id) {
@@ -60,6 +73,17 @@ const update = async (id, data, user) => {
         )
     }
 
+    if (data.status) {
+        updatedData.status = data.status
+
+        if (data.status === ExtensionStatus.APPROVED) {
+            await rentalRepository.update(rentalExtension.rentalId, {
+                status: RentalStatus.ACTIVE,
+                dueDate: rentalExtension.newDueDate,
+            })
+        }
+    }
+
     if (data.rejectReason) {
         updatedData.rejectReason = data.rejectReason
     }
@@ -79,6 +103,8 @@ const getById = async (id, user) => {
     if (user.role === Role.STUDENT && rental.studentId !== user.id) {
         throw new ConflictError('Nie możesz pobrać danych o tym przedłużeniu')
     }
+
+    return rentalExtension
 }
 
 const getAll = async (filters, pagination, user) => {

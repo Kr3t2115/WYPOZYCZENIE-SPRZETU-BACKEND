@@ -20,6 +20,12 @@ const findById = async (id) => {
     })
 }
 
+const findByRentalId = async (rentalId) => {
+    return prisma.rentalExtension.findUnique({
+        where: { rentalId: rentalId },
+    })
+}
+
 const update = async (id, data) => {
     return prisma.rentalExtension.update({
         where: {
@@ -29,4 +35,4 @@ const update = async (id, data) => {
     })
 }
 
-export { insert, findAll, findById, update, count }
+export { insert, findAll, findById, update, count, findByRentalId }

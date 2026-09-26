@@ -20,7 +20,7 @@ const statusField = z.enum(ReservationStatus)
 const notesField = z.string().min(1).max(1000).optional()
 
 const reviewedByField = uuidField
-const rejectionReasonField = z.string().min(1).max(1000).optional()
+const rejectReasonField = z.string().min(1).max(1000).optional()
 
 const createSchema = z.object({
     equipmentId: equipmentIdField,
@@ -36,9 +36,8 @@ const updateSchema = z.object({
     endDate: dateField.optional(),
     status: statusField.optional(),
     notes: notesField,
-
     // przez sekretariat
-    rejectionReason: rejectionReasonField,
+    rejectReason: rejectReasonField,
     reviewedBy: reviewedByField.optional(),
 })
 
@@ -49,7 +48,7 @@ const getSchema = z.object({
     endDate: dateField.optional(),
     status: statusField.optional(),
     reviewedBy: reviewedByField.optional(),
-    studentId: statusField.optional(),
+    studentId: uuidField.optional(),
 })
 
 export { updateSchema, createSchema, getSchema }

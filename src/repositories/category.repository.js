@@ -19,10 +19,10 @@ const findById = async (id) => {
         where: { id: id },
     })
 }
+
 const findByName = async (name, excludeId = null) => {
-    return prisma.category.findUnique({
-        where: { name: name },
-        ...(excludeId && { id: { not: excludeId } }),
+    return prisma.category.findFirst({
+        where: { name, ...(excludeId && { NOT: { id: excludeId } }) },
     })
 }
 

@@ -78,6 +78,7 @@ const resetPassword = async (token, newPassword) => {
     const hashedPassword = await bcrypt.hash(newPassword, 10)
 
     await userRepository.updateUserPassword(resetToken.userId, hashedPassword)
+    await userRepository.revokeRefreshTokensByUserId(resetToken.userId)
     await passwordResetRepository.markTokenAsUsed(token)
 }
 

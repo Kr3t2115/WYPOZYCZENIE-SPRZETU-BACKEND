@@ -12,14 +12,8 @@ const create = async (data, student) => {
         throw new ConflictError(`Taki sprzęt nie istnieje`)
     }
 
-    if (equipment.status !== EquipmentStatus.AVAILABLE) {
-        throw new ConflictError(
-            'Status sprzętu musi być na AVAILABLE (dostępny)'
-        )
-    }
-
     const checkDateConflict =
-        await reservationsRepository.findReservationConflict(data)
+        await reservationsRepository.findReservationDateConflict(data)
 
     if (checkDateConflict) {
         throw new ConflictError('Konflikt dat')
@@ -62,10 +56,10 @@ const update = async (id, data, user) => {
             }
 
             const checkDateConfilict =
-                await reservationsRepository.findReservationConflict(
+                await reservationsRepository.findReservationDateConflict(
                     {
-                        equipmentId: data.equipmentId,
-                        setDate: newStartDate,
+                        equipmentId: reservation.equipmentId,
+                        startDate: newStartDate,
                         endDate: newEndDate,
                     },
                     id
@@ -77,14 +71,21 @@ const update = async (id, data, user) => {
                 )
             }
 
-            if (data.status && ReservationStatus.CANCELLED === data.status) {
+            if (data.staus && ReservationStatus.CANCELLED !== data.status) {
+                throw new ConflictError('Nie możesz wykonać tej operacji')
+            }
+
+            if (data.status) {
                 updatedData.status = ReservationStatus.CANCELLED
             }
 
             updatedData.startDate = newStartDate
             updatedData.endDate = newEndDate
 
-            updatedData.notes = data.notes ?? null
+            if (data.notes) {
+                updatedData.notes = data.notes
+            }
+
             return reservationsRepository.update(id, updatedData)
         case Role.SECRETARIAT:
         case Role.IT_STAFF:
@@ -99,6 +100,10 @@ const update = async (id, data, user) => {
 
             updatedData.rejectReason = data.rejectReason ?? null
 
+            updatedData.reviewedBy = user.id
+
+            updatedData.reviewedAt = new Date()
+
             return reservationsRepository.update(id, updatedData)
     }
 }
@@ -108,6 +113,10 @@ const getById = async (id, user) => {
 
     switch (user.role) {
         case Role.STUDENT:
+            if (!reservation) {
+                throw new ConflictError('Taka rezerwacja nie istnieje')
+            }
+
             if (reservation.studentId !== user.id) {
                 throw new ConflictError(
                     'Nie możesz pobrać danych odnośnie tej rezerwacji'
@@ -140,7 +149,7 @@ const buildWhere = (filters, user) => {
     if (filters.equipmentId) {
         where.equipmentId = filters.equipmentId
     }
-    if (filters.status && ReservationStatus.includes(filters.status)) {
+    if (filters.status) {
         where.status = filters.status
     }
     if (filters.startDate) {
@@ -159,7 +168,6 @@ const buildWhere = (filters, user) => {
             if (filters.reviewedBy) {
                 where.reviewedBy = filters.reviewedBy
             }
-
             break
     }
 

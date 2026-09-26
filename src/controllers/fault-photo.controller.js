@@ -7,9 +7,9 @@ const store = async (req, res, next) => {
         let mode
 
         if (req.user && req.user.role !== Role.STUDENT) {
-            new ForbiddenError('Brak uprawnień do wykonania tej operacji')
+            throw new ForbiddenError('Brak uprawnień do wykonania tej operacji')
         } else if (!req.user && !req.params.token) {
-            new ForbiddenError('Brak uprawnień do wykonania tej operacji')
+            throw new ForbiddenError('Brak uprawnień do wykonania tej operacji')
         }
 
         if (req.params.token) {

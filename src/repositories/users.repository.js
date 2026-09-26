@@ -25,6 +25,13 @@ const update = async (id, data) => {
             id: id,
         },
         data: data,
+        select: {
+            id: true,
+            email: true,
+            role: true,
+            isActive: true,
+            lastLogin: true,
+        },
     })
 }
 
@@ -61,17 +68,29 @@ const createRefreshToken = async ({ token, userId, expiresAt }) => {
         data: { token, userId, expiresAt },
     })
 }
-
 const findRefreshToken = async (token) => {
-    return prisma.refreshToken.findUnique({
-        where: { token },
-        include: { user: true },
+    return prisma.refreshToken.findFirst({
+        where: { token, revoked: false, user: { isActive: true } },
+        select: {
+            id: true,
+            token: true,
+            revoked: true,
+            expiresAt: true,
+            user: { select: { id: true, email: true, isActive: true } },
+        },
     })
 }
 
 const revokeRefreshToken = async (token) => {
     return prisma.refreshToken.updateMany({
         where: { token },
+        data: { revoked: true },
+    })
+}
+
+const revokeRefreshTokensByUserId = async (userId) => {
+    return prisma.refreshToken.updateMany({
+        where: { userId: userId },
         data: { revoked: true },
     })
 }
@@ -94,4 +113,5 @@ export {
     findRefreshToken,
     revokeRefreshToken,
     updateUserPassword,
+    revokeRefreshTokensByUserId,
 }

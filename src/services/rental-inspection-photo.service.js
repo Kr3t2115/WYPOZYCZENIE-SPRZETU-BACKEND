@@ -22,32 +22,24 @@ const create = async (id, files, mode, user, token) => {
             throw new ForbiddenError('Token nie pasuje do tego zgłoszenia')
         }
 
-        if (!fault.uploadTokenExpiry || fault.uploadTokenExpiry < new Date()) {
+        if (
+            !rentalInspection.uploadTokenExpiry ||
+            rentalInspection.uploadTokenExpiry < new Date()
+        ) {
             throw new ConflictError('Token wygasł')
         }
     } else {
         rentalInspection = await rentalInspectionRepository.findById(id)
 
-        if (!fault) {
+        if (!rentalInspection) {
             throw new NotFoundError('Nie znaleziono szkody')
-        }
-
-        const ALLOWED_ROLES = [Role.IT_STAFF, Role.SECRETARIAT]
-
-        if (
-            !ALLOWED_ROLES.includes(user.role) ||
-            rentalInspection.inspectedBy !== user.id
-        ) {
-            throw new ConflictError(
-                'To nie jest insepekcja zaraportowana przez Ciebie'
-            )
         }
     }
 
     let photosList = []
 
     files.map((file) => {
-        const data = buildFileMetadata(file, 'equipment-photos')
+        const data = buildFileMetadata(file, 'inspection-photos')
 
         photosList.push({
             inspectionId: rentalInspection.id,

@@ -2,13 +2,23 @@ import * as rentalInspectionRepository from '../repositories/rental-inspection.r
 import * as rentalRepository from '../repositories/rental.repository.js'
 import { ConflictError, NotFoundError } from '../utils/errors.util.js'
 import { getPaginationMeta } from '../utils/pagination.util.js'
-import * as faultRepository from '../repositories/fault.repository.js'
+import crypto from 'crypto'
 
 const create = async (data, user) => {
     const rental = await rentalRepository.findById(data.rentalId)
 
     if (!rental) {
         throw new NotFoundError('Nie znaleziono wypożyczenia')
+    }
+
+    const rentalInspection =
+        await rentalInspectionRepository.findByRentalIdAndType(
+            data.rentalId,
+            data.type
+        )
+
+    if (rentalInspection) {
+        throw new ConflictError('Ta inspekcja już istnieje')
     }
 
     const uploadToken = crypto.randomBytes(32).toString('hex')

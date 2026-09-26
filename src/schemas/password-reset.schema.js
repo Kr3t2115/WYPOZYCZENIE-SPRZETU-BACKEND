@@ -7,7 +7,7 @@ export const requestResetSchema = z.object({
 export const resetPasswordSchema = z
     .object({
         token: z.string().min(1, 'Brak tokena'),
-        newPassword: z.string(),
+        newPassword: z.string().min(8),
         confirmPassword: z.string(),
     })
     .refine((data) => data.newPassword === data.confirmPassword, {

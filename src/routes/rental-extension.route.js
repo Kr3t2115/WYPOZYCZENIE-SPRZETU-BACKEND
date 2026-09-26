@@ -35,15 +35,19 @@ rentalExtensionRoutes.get(
     show
 )
 
-rentalExtensionRoutes.use(roleMiddleware([Role.IT_STAFF, Role.SECRETARIAT]))
+rentalExtensionRoutes.post(
+    '/',
+    roleMiddleware([Role.STUDENT]),
+    validate(createSchema),
+    store
+)
 
+rentalExtensionRoutes.use(roleMiddleware([Role.IT_STAFF, Role.SECRETARIAT]))
 rentalExtensionRoutes.patch(
     '/:id',
     validate(idParamsSchema, VALIDATION_SOURCE.PARAMS),
     validate(updateSchema),
     update
 )
-
-rentalExtensionRoutes.post('/', validate(createSchema), store)
 
 export { rentalExtensionRoutes }

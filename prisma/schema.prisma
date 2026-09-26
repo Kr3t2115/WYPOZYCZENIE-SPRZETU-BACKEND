@@ -267,7 +267,7 @@ enum ExtensionStatus {
 
 model RentalExtension {
   id           String          @id @default(uuid())
-  rentalId     String
+  rentalId     String          @unique
   newDueDate   DateTime
   status       ExtensionStatus @default(PENDING)
   requestedAt  DateTime        @default(now())

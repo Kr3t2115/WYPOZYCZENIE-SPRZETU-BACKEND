@@ -24,7 +24,7 @@ const list = async (req, res, next) => {
 
 const show = async (req, res, next) => {
     try {
-        const fault = await faultService.getById(req.params.id)
+        const fault = await faultService.getById(req.params.id, req.user)
         return res.status(200).json(fault)
     } catch (err) {
         next(err)
@@ -33,7 +33,11 @@ const show = async (req, res, next) => {
 
 const update = async (req, res, next) => {
     try {
-        const updatedFault = await faultService.update(req.params.id, req.body)
+        const updatedFault = await faultService.update(
+            req.params.id,
+            req.body,
+            req.user
+        )
         return res.status(200).json(updatedFault)
     } catch (err) {
         next(err)
@@ -42,7 +46,10 @@ const update = async (req, res, next) => {
 
 const regenerateUploadToken = async (req, res, next) => {
     try {
-        const result = await faultService.regenerateUploadToken(req.params.id)
+        const result = await faultService.regenerateUploadToken(
+            req.params.id,
+            req.user
+        )
         return res.status(200).json(result)
     } catch (err) {
         next(err)
